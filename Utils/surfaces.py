@@ -6,9 +6,9 @@ import random
 from constants import *
 
 
-def print_verbose_msg(msg, 
+def print_verbose_msg(msg,
                       level):
-	"""
+    """
     This function prints a message and its level of severity
     
     Input:
@@ -19,122 +19,128 @@ def print_verbose_msg(msg,
         None
     """
     
-        complete_msg = f"{VERBOSITY_DICT[level]}: {msg}"
-        print(complete_msg)
-    
+    complete_msg = f"{VERBOSITY_DICT[level]}: {msg}"
+    print(complete_msg)
+    return None
  
-def check_zernike_parameters(m_index, 
-                             n_index, 
-                             rho, 
-                             verbose=False):
+
+def check_zernike_parameters(
+    m_index,
+    n_index,
+    rho,
+    verbose=False):
     """
-	This function checks that the zernike parameters are valid    
+    This function checks that the zernike parameters are valid    
     Input:
-    	m_index (int): The m number of the Zernike Polynomial
+        m_index (int): The m number of the Zernike Polynomial
         n_index (int): The n number of the Zernike Polynomial
         rho (float): The distance of the point to the center (radius in polar coordinates) 
         verbose (bool): Indicates if the errors are displayed in console. Default is False.
-    
+        
     Returns:
-    	bool: True if the parameters are correct, False otherwise
+        bool: True if the parameters are correct, False otherwise
     """
-    
+
     # If n is lower than m there is an error
     if n_index < abs(m_index):
-    	if verbose:
-        	msg = f"The n index is smaller than m index: {n_index} < {abs(m_index)}"
-        	print_verbose_msg(msg, ERROR)
-    return False
-    
+        if verbose:
+            msg = f"The n index is smaller than m index: {n_index} < {abs(m_index)}"
+            print_verbose_msg(msg, ERROR)
+        return False
+        
     # If the radius is less than 0 or greater than 1 there is an error
     if rho < 0 or rho > 1:
-    	if verbose:
-    		msg = f"The radius (ro) must be between -1 and 1. Radius is {rho}"
-    	    print_verbose_msg(msg, ERROR)
-    	return False
-    
+        if verbose:
+            msg = f"The radius (ro) must be between -1 and 1. Radius is {rho}"
+            print_verbose_msg(msg, ERROR)
+        return False
     return True
 
 
-def compute_radial_value(m_index,
-                         n_index,
-                         rho, 
-                         verbose=False):
+def compute_radial_value(
+    m_index,
+    n_index,
+    rho, 
+    verbose=False):
     """
     Computes the radial polynomial at ro given m and n indexes of the Zernike Polynomials
-    
+        
     Input:
         m_index (int): The m number of the Zernike Polynomial
         n_index (int): The n number of the Zernike Polynomial
         rho (float): The distance of the point to the center (radius in polar coordinates)
-        
+            
     Returns:
         r_value(float): The value of the radial polynomial at rho
     """
-    
+        
     # Default value of the polynomial
     if rho == 1:
         return 1
     
     # Value if n-m is odd
     r_value = 0
-    
-    
+        
+        
     n_minus_m = n_index - m_index
     module = n_minus_m % 2
-    
+        
     # If the module of n-m is even calculate
     if module == 0:
         # Compute the index of the sumatory and add 1 for the loop
         sumatory_index = (n_minus_m)//2 + 1
-        
+            
         # The summatory
         for k in range(0, sumatory_index):
-            
+                
             # Compute the numerator: (-1)^k * (n-k)!
             numerator = (-1)**k * math.factorial(n_index-k)
-            
+                
             # Compute the numbers from which we will compute their factorials for the denominator
             n_plus_m_d2_minus_k = (n_index + m_index)//2 - k  # (n+m)/2 - k
             n_minus_m_d2_minus_k = (n_index - m_index)//2 - k # (n-m)/2 - k
-            
+                
             # Compute denominator: k! * ((n+m)/2 - k)! *((n-m)/2 - k)!
             denominator = math.factorial(k) * math.factorial(n_plus_m_d2_minus_k) * math.factorial(n_minus_m_d2_minus_k)
-            
+                
             # Update the total sum
             r_value += numerator/denominator * rho**(n_index-2*k)
-        
+            
     return r_value
 
 
-def compute_zernike_polynomial_at_point(m_index,
-                                        n_index,
-                                        rho,
-                                        varphi,
-                                        verbose=False):
+def compute_zernike_polynomial_at_point(
+    m_index,
+    n_index,
+    rho,
+    varphi,
+    verbose=False):
     """
     This function computes the value of a Zernike polynomial on polar coordinates given the Zernike coefficients
-    
+        
     Input:
         m_index (int): The m number of the Zernike Polynomial
         n_index (int): The n number of the Zernike Polynomial
         rho (float): The distance of the point to the center (radius in polar coordinates) 
         varphi (float): The angle of the point with respect to x-axis (angle in polar coordinates)
-        
+            
     Returns:
+        success (bool)
         zernike_value (float): The value of the zernike_polynomial at the point
     """
-    
+        
     # First check if the zernike parameters are valid
-    if not check_zernike_parameters(m_index, 
-                                    n_index, 
-                                    rho, 
-                                    verbose):
-    return False, None
-    
+    success = check_zernike_parameters(m_index, 
+                                       n_index, 
+                                       rho, 
+                                       verbose=verbose)
+
+    if not success:
+        return success, None
+        
     # Obtain the absolute value of the m index
     m_abs_index = abs(m_index)
-    
+        
     # Obtain the sign of the m index
     m_sign = 1
     if m_abs_index > 0:
@@ -145,23 +151,24 @@ def compute_zernike_polynomial_at_point(m_index,
                                    n_index, 
                                    rho,
                                    verbose)
-    
+        
     # Compute the zernike value
     if m_sign == 1:
         zernike_value = r_value * math.cos(m_abs_index * varphi)
     else:
         zernike_value = r_value * math.sin(m_abs_index * varphi)
-        
-    return zernike_value
+            
+    return success, zernike_value
 
 
-def compute_surface_value_at_point(rho,
-                                   varphi,
-                                   zernike_polynomials,
-                                   verbose=False):
+def compute_surface_value_at_point(
+    rho,
+    varphi,
+    zernike_polynomials,
+    verbose=False):
     """
     Function to compute the z value of a surface at a point given zernike coefficients and polar coordinates of point
-    
+        
     Input:
         rho (float): The distance of the point to the center (radius in polar coordinates) 
         varphi(float): The angle of the point with respect to x-axis (angle in polar coordinates)
@@ -169,23 +176,29 @@ def compute_surface_value_at_point(rho,
         verbose (bool): Optional. True if more verbosity for errors
         
     Returns:
+        bool (bool): True if the computation had no failures
         z_value (float): The value of the surface at the point
     """
-    
+        
     # Initialize the z value of the point
     z_value = 0
-    
+        
     # For compute the point value on each zernike polynomials and add them all with a weighted sum
     for m_index, n_index, coefficient in zernike_polynomials:
-        actual_value = compute_zernike_polynomial_at_point(m_index,
-                                                           n_index,
-                                                           rho,
-                                                           varphi,
-                                                           verbose=verbose)
+        success, actual_value = compute_zernike_polynomial_at_point(m_index,
+                                                                    n_index,
+                                                                    rho,
+                                                                    varphi,
+                                                                    verbose=verbose)
+
+        if not success:
+            return success, None
+
         weighted_value = coefficient * actual_value
         z_value += weighted_value
+
         
-    return z_value
+    return success, z_value
 
 
 def evaluate_z_from_surface(rho_coordinates,
@@ -227,7 +240,7 @@ def get_random_zernike_coefficients():
     Describes a random surface based on the zernike polynomials returning their indexes and coefficients to plot them
     Input:
         None
-    
+        
     Returns:
         zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
     """
@@ -242,7 +255,7 @@ def get_random_zernike_coefficients():
         zp = zpi + (coef,)
         # Append it to the list of zernike polynomials with coefficients
         zernike_polynomials.append(zp)
-
+        
     return zernike_polynomials
 
 
@@ -282,6 +295,8 @@ def polar_samples_unit_circle_for_data_generation(n_circles=5,
 
 
 def generate_data_for_training(n_data,
+                               features_file_path,
+                               labels_file_path,
                                verbose=False):
     """
     Generates a dataframe with data for training
@@ -303,12 +318,12 @@ def generate_data_for_training(n_data,
         
         # Get the points polar coordinates to sample from the surface created by the zernike polynomials
         rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
-        
+            
         # Compute the values of the surface at the points
         surface_values = evaluate_z_from_surface(rho_coordinates,
-                                               varphi_coordinates,
-                                               zernike_polynomials,
-                                               verbose=verbose)
+                                                 varphi_coordinates,
+                                                 zernike_polynomials,
+                                                 verbose=verbose)
         
         # Append the surface values to the surface list
         surface_list.append(surface_values)
@@ -321,10 +336,10 @@ def generate_data_for_training(n_data,
         
         # Append the surface zernike coefficients to the list of coefficients
         coefficient_list.append(np_coefficients)
-    
+        
     # Create the dataframe and add the data
-    np.save(FEATURES_FILE_PATH, surface_list)
-    np.save(LABELS_FILE_PATH, coefficient_list)
+    np.save(features_file_path, surface_list)
+    np.save(labels_file_path, coefficient_list)
     return None
 
 
@@ -368,9 +383,9 @@ def plot_2d_polar_points(rho_samples,
     ax.set_rticks([])
     
     angles = [0, 45, 90, 135, 180, 225, 270, 315]
-    labels = ['0',r'$\frac{\pi}{4}$',r'$\frac{\pi}{2}$',r'$\frac{3\pi}{4}$',\
-    r'$\pi$',r'$\frac{5\pi}{4}$',r'$\frac{3\pi}{2}$',r'$\frac{7\pi}{4}$']
+    labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
     ax.set_thetagrids(angles, labels=labels)
+
     # Plot the points
     ax.plot(varphi_samples, rho_samples, 'k.')
 
@@ -391,6 +406,7 @@ def compute_zernike_polynomial_for_meshgrid(m_index,
         verbose (bool): Optional. True if more verbosity for errors
         
     Returns:
+        success (bool): True if the computation succeeded
         zernike_mesh: The values of the zernike polynomial in the mesh grid
     """
     
@@ -409,13 +425,19 @@ def compute_zernike_polynomial_for_meshgrid(m_index,
             varphi = varphi_mesh[r][c]
             
             # Assign the result in the Z axis matrix mesh
-            zernike_mesh[r][c] = compute_zernike_polynomial_at_point(m_index,
-                                                                     n_index,
-                                                                     rho,
-                                                                     varphi,
-                                                                     verbose=verbose)
+            success, value = compute_zernike_polynomial_at_point(m_index,
+                                                                 n_index,
+                                                                 rho,
+                                                                 varphi,
+                                                                 verbose=verbose)
+
+            if not success:
+                return False, None
+
+            # Assign the result in the Z axis matrix mesh
+            zernike_mesh[r][c] = value
             
-    return zernike_mesh
+    return True, zernike_mesh
 
 
 def plot_surface(zernike_polynomials,
@@ -433,36 +455,44 @@ def plot_surface(zernike_polynomials,
     Returns:
         None
     """
-    
+        
     # Get the radius and angle samples
     rho_samples, varphi_samples = polar_samples_unit_circle_for_plotting(n_radiuses=n_radiuses,
                                                                          n_angles=n_angles)
     # Create the mesh grid from the sampled data
     rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
-    
+        
     # Create a list with the zernike meshes
     zernike_meshes = []
     
     # Calculate each the zernike mesh
     for m_index, n_index, coefficient in zernike_polynomials:
-        z_mesh = compute_zernike_polynomial_for_meshgrid(m_index,
-                                                         n_index,
-                                                         rho_mesh,
-                                                         varphi_mesh,
-                                                         verbose=verbose)
+        success, z_mesh = compute_zernike_polynomial_for_meshgrid(m_index,
+                                                                  n_index,
+                                                                  rho_mesh,
+                                                                  varphi_mesh,
+                                                                  verbose=verbose)
+
+        if not success:
+            if verbose:
+                msg = "Unable to compute the surface"
+                print_verbose_msg(msg, 
+                                  ERROR)
+            return None
+
         # Weight the zernike mesh with its coefficient
         weighted_z_mesh = coefficient * z_mesh
         
         # Add the weighted zernike mesh to the meshes list
         zernike_meshes.append(weighted_z_mesh)
-    
+        
     # Get the shape of the zernike matrix mesh
     rows = rho_mesh.shape[0]
     columns = rho_mesh.shape[1]
-    
+        
     # Create an empty surface mesh
     surface_mesh = np.zeros((rows, columns))
-    
+        
     # Combine all the zernike meshes
     for submesh in zernike_meshes:
         surface_mesh += submesh
@@ -476,3 +506,4 @@ def plot_surface(zernike_polynomials,
     # Plot the surface
     ax.plot_surface(X, Y, surface_mesh, cmap=plt.cm.YlGnBu_r)
     plt.show()
+    return None
