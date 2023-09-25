@@ -358,3 +358,37 @@ def plot_surface(zernike_polynomials,
     # Plot the surface
     ax.plot_surface(X, Y, surface_mesh, cmap=plt.cm.YlGnBu_r)
     plt.show()
+
+
+def sample_z_from_surface(rho_coordinates,
+                          varphi_coordinates,
+                          zernike_polynomials,
+                          verbose=False):
+    """
+    Samples the z value of a surface given its zernike polynomials and polar coordinates of points
+    
+    Input:
+        rho_coordinates (np.array): The array containing the radius polar coordinates of the points
+        varphi_coordinates (np.array): The array containing the angle polar coordinates of the points
+        zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        z_values (np.array): The array containing the z value of the surface in the coordinates
+    """
+    
+    # The list to store the z values
+    z_list = []
+    
+    # Loop to compute the z value on all the given points
+    for (rho, varphi) in zip(rho_coordinates, varphi_coordinates):
+        z_value = compute_surface_value_at_point(rho,
+                                                 varphi,
+                                                 zernike_polynomials,
+                                                 verbose=verbose)
+        z_list.append(z_value)
+    
+    # Convert list to numpy array
+    z_values = np.array(z_list)
+    
+    return z_values
