@@ -1,3 +1,8 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+import random
+
 from constants import *
 
 
@@ -321,7 +326,7 @@ def generate_data_for_training(n_data,
     np.save(FEATURES_FILE_PATH, surface_list)
     np.save(LABELS_FILE_PATH, coefficient_list)
     return None
-    
+
 
 def polar_samples_unit_circle_for_plotting(n_radiuses=50, 
                                            n_angles=50):
