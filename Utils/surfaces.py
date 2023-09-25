@@ -49,54 +49,6 @@ def check_zernike_parameters(m_index,
     	return False
     
     return True
-    
-    
-def compute_zernike_polynomial_at_point(m_index,
-                                        n_index,
-                                        rho,
-                                        varphi,
-                                        verbose=False):
-	"""
-    This function computes the value of a Zernike polynomial on polar coordinates given the Zernike coefficients
-    
-    Input:
-        m_index (int): The m number of the Zernike Polynomial
-        n_index (int): The n number of the Zernike Polynomial
-        rho (float): The distance of the point to the center (radius in polar coordinates) 
-        varphi (float): The angle of the point with respect to x-axis (angle in polar coordinates)
-        
-   	Returns:
-    	zernike_value (float): The value of the zernike_polynomial at the point
-    """
-    
-    # First check if the zernike parameters are valid
-    if not check_zernike_parameters(m_index, 
-                                    n_index, 
-                                    rho, 
-                                    verbose):
-    return False, None
-    
-	# Obtain the absolute value of the m index
-    m_abs_index = abs(m_index)
-    
-    # Obtain the sign of the m index
-    m_sign = 1
-    if m_abs_index > 0:
-    	m_sign = m_index // m_abs_index
-    
-    # Compute the radial polynomial value at rho
-    r_value = compute_radial_value(m_abs_index, 
-                                   n_index, 
-                                   rho,
-                                   verbose)
-    
-    # Compute the zernike value
-    if m_sign == 1:
-    	zernike_value = r_value * math.cos(m_abs_index * varphi)
-    else:
-    	zernike_value = r_value * math.sin(m_abs_index * varphi)
-        
-    return zernike_value
 
 
 def compute_radial_value(m_index,
@@ -148,6 +100,87 @@ def compute_radial_value(m_index,
             r_value += numerator/denominator * rho**(n_index-2*k)
         
     return r_value
+
+
+def compute_zernike_polynomial_at_point(m_index,
+                                        n_index,
+                                        rho,
+                                        varphi,
+                                        verbose=False):
+    """
+    This function computes the value of a Zernike polynomial on polar coordinates given the Zernike coefficients
+    
+    Input:
+        m_index (int): The m number of the Zernike Polynomial
+        n_index (int): The n number of the Zernike Polynomial
+        rho (float): The distance of the point to the center (radius in polar coordinates) 
+        varphi (float): The angle of the point with respect to x-axis (angle in polar coordinates)
+        
+    Returns:
+        zernike_value (float): The value of the zernike_polynomial at the point
+    """
+    
+    # First check if the zernike parameters are valid
+    if not check_zernike_parameters(m_index, 
+                                    n_index, 
+                                    rho, 
+                                    verbose):
+    return False, None
+    
+    # Obtain the absolute value of the m index
+    m_abs_index = abs(m_index)
+    
+    # Obtain the sign of the m index
+    m_sign = 1
+    if m_abs_index > 0:
+        m_sign = m_index // m_abs_index
+    
+    # Compute the radial polynomial value at rho
+    r_value = compute_radial_value(m_abs_index, 
+                                   n_index, 
+                                   rho,
+                                   verbose)
+    
+    # Compute the zernike value
+    if m_sign == 1:
+        zernike_value = r_value * math.cos(m_abs_index * varphi)
+    else:
+        zernike_value = r_value * math.sin(m_abs_index * varphi)
+        
+    return zernike_value
+
+    
+def compute_surface_value_at_point(rho,
+                                   varphi,
+                                   zernike_polynomials,
+                                   verbose=False):
+    """
+    Function to compute the z value of a surface at a point given zernike coefficients and polar coordinates of point
+    
+    Input:
+        rho (float): The distance of the point to the center (radius in polar coordinates) 
+        varphi(float): The angle of the point with respect to x-axis (angle in polar coordinates)
+        zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        z_value (float): The value of the surface at the point
+    """
+    
+    # Initialize the z value of the point
+    z_value = 0
+    
+    # For compute the point value on each zernike polynomials and add them all with a weighted sum
+    for m_index, n_index, coefficient in zernike_polynomials:
+        actual_value = compute_zernike_polynomial_at_point(m_index,
+                                                           n_index,
+                                                           rho,
+                                                           varphi,
+                                                           verbose=verbose)
+        weighted_value = coefficient * actual_value
+        z_value += weighted_value
+        
+    return z_value
 
 
 def get_random_zernike_coefficients():
