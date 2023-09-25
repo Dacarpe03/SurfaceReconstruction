@@ -230,3 +230,46 @@ def plot_2d_polar_points(rho_samples,
     ax.set_thetagrids(angles, labels=labels)
     # Plot the points
     ax.plot(varphi_samples, rho_samples, 'k.')
+
+
+def compute_zernike_polynomial_for_meshgrid(m_index,
+                                            n_index, 
+                                            rho_mesh,
+                                            varphi_mesh,
+                                            verbose=False):
+    """
+    Function to compute the zernike polynomials z component for plotting
+    
+    Input:
+        m_index (int): The m number of the Zernike Polynomial
+        n_index (int): The n number of the Zernike Polynomial
+        rho_mesh (np.array): A 2d array containing the radius of the points' polar coordinates
+        varphi_mesh(np.array): A 2d array containing the angle of the points' polar coordinates
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        zernike_mesh: The values of the zernike polynomial in the mesh grid
+    """
+    
+    # Get rows and columns from mesh to create the Z axis matrix mesh
+    rows = rho_mesh.shape[0]
+    columns = rho_mesh.shape[1]
+    
+    # Create an empty 2d array
+    zernike_mesh = np.empty((rows, columns))
+    
+    # Fill the Z data array with the zernike values of the points
+    for r in range(0, rows):
+        for c in range(0, columns):
+            # Get rho and varphi from the meshes
+            rho = rho_mesh[r][c]
+            varphi = varphi_mesh[r][c]
+            
+            # Assign the result in the Z axis matrix mesh
+            zernike_mesh[r][c] = compute_zernike_polynomial_at_point(m_index,
+                                                                     n_index,
+                                                                     rho,
+                                                                     varphi,
+                                                                     verbose=verbose)
+            
+    return zernike_mesh
