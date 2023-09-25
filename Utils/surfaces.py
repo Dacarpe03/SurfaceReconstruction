@@ -149,7 +149,7 @@ def compute_zernike_polynomial_at_point(m_index,
         
     return zernike_value
 
-    
+
 def compute_surface_value_at_point(rho,
                                    varphi,
                                    zernike_polynomials,
@@ -183,6 +183,40 @@ def compute_surface_value_at_point(rho,
     return z_value
 
 
+def evaluate_z_from_surface(rho_coordinates,
+                            varphi_coordinates,
+                            zernike_polynomials,
+                            verbose=False):
+    """
+    Evaluates the z value of a surface given its zernike polynomials and polar coordinates of points
+    
+    Input:
+        rho_coordinates (np.array): The array containing the radius polar coordinates of the points
+        varphi_coordinates (np.array): The array containing the angle polar coordinates of the points
+        zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        z_values (np.array): The array containing the z value of the surface in the coordinates
+    """
+    
+    # The list to store the z values
+    z_list = []
+    
+    # Loop to compute the z value on all the given points
+    for (rho, varphi) in zip(rho_coordinates, varphi_coordinates):
+        z_value = compute_surface_value_at_point(rho,
+                                                 varphi,
+                                                 zernike_polynomials,
+                                                 verbose=verbose)
+        z_list.append(z_value)
+    
+    # Convert list to numpy array
+    z_values = np.array(z_list)
+    
+    return z_values
+
+
 def get_random_zernike_coefficients():
     """
     Describes a random surface based on the zernike polynomials returning their indexes and coefficients to plot them
@@ -205,7 +239,6 @@ def get_random_zernike_coefficients():
         zernike_polynomials.append(zp)
 
     return zernike_polynomials
-
 
 
 def polar_samples_unit_circle_for_data_generation(n_circles=5, 
@@ -242,6 +275,53 @@ def polar_samples_unit_circle_for_data_generation(n_circles=5,
     
     return rho_samples, varphi_samples
 
+
+def generate_data_for_training(n_data,
+                               verbose=False):
+    """
+    Generates a dataframe with data for training
+    
+    Input:
+        n_data (int): Number of data points to train (A data point consisting on a surface and its zernike coefficients)
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        surface_dataframe (pd.DataFrame): A dataframe with columns 'surface_values' and 'zernike_coefficients' contaning arrays
+    """
+    
+    surface_list = []
+    coefficient_list = []
+    
+    for i in range(0, n_data):
+        # Get the zernike polynomials with their coefficients
+        zernike_polynomials = get_random_zernike_coefficients()
+        
+        # Get the points polar coordinates to sample from the surface created by the zernike polynomials
+        rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
+        
+        # Compute the values of the surface at the points
+        surface_values = evaluate_z_from_surface(rho_coordinates,
+                                               varphi_coordinates,
+                                               zernike_polynomials,
+                                               verbose=verbose)
+        
+        # Append the surface values to the surface list
+        surface_list.append(surface_values)
+        
+        # Get last element (zernike coefficient) of the zernike polynomials tuples to store them in the dataframe
+        coefficients = list(map(lambda x: x[-1], zernike_polynomials))
+        
+        # Convert the list to a numpy array
+        np_coefficients = np.array(coefficients)
+        
+        # Append the surface zernike coefficients to the list of coefficients
+        coefficient_list.append(np_coefficients)
+    
+    # Create the dataframe and add the data
+    np.save(FEATURES_FILE_PATH, surface_list)
+    np.save(LABELS_FILE_PATH, coefficient_list)
+    return None
+    
 
 def polar_samples_unit_circle_for_plotting(n_radiuses=50, 
                                            n_angles=50):
@@ -391,37 +471,3 @@ def plot_surface(zernike_polynomials,
     # Plot the surface
     ax.plot_surface(X, Y, surface_mesh, cmap=plt.cm.YlGnBu_r)
     plt.show()
-
-
-def sample_z_from_surface(rho_coordinates,
-                          varphi_coordinates,
-                          zernike_polynomials,
-                          verbose=False):
-    """
-    Samples the z value of a surface given its zernike polynomials and polar coordinates of points
-    
-    Input:
-        rho_coordinates (np.array): The array containing the radius polar coordinates of the points
-        varphi_coordinates (np.array): The array containing the angle polar coordinates of the points
-        zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
-        verbose (bool): Optional. True if more verbosity for errors
-        
-    Returns:
-        z_values (np.array): The array containing the z value of the surface in the coordinates
-    """
-    
-    # The list to store the z values
-    z_list = []
-    
-    # Loop to compute the z value on all the given points
-    for (rho, varphi) in zip(rho_coordinates, varphi_coordinates):
-        z_value = compute_surface_value_at_point(rho,
-                                                 varphi,
-                                                 zernike_polynomials,
-                                                 verbose=verbose)
-        z_list.append(z_value)
-    
-    # Convert list to numpy array
-    z_values = np.array(z_list)
-    
-    return z_values
