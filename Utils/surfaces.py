@@ -97,3 +97,54 @@ def compute_zernike_polynomial_at_point(m_index,
     	zernike_value = r_value * math.sin(m_abs_index * varphi)
         
     return zernike_value
+
+
+def compute_radial_value(m_index,
+                         n_index,
+                         rho, 
+                         verbose=False):
+    """
+    Computes the radial polynomial at ro given m and n indexes of the Zernike Polynomials
+    
+    Input:
+        m_index (int): The m number of the Zernike Polynomial
+        n_index (int): The n number of the Zernike Polynomial
+        rho (float): The distance of the point to the center (radius in polar coordinates)
+        
+    Returns:
+        r_value(float): The value of the radial polynomial at rho
+    """
+    
+    # Default value of the polynomial
+    if rho == 1:
+        return 1
+    
+    # Value if n-m is odd
+    r_value = 0
+    
+    
+    n_minus_m = n_index - m_index
+    module = n_minus_m % 2
+    
+    # If the module of n-m is even calculate
+    if module == 0:
+        # Compute the index of the sumatory and add 1 for the loop
+        sumatory_index = (n_minus_m)//2 + 1
+        
+        # The summatory
+        for k in range(0, sumatory_index):
+            
+            # Compute the numerator: (-1)^k * (n-k)!
+            numerator = (-1)**k * math.factorial(n_index-k)
+            
+            # Compute the numbers from which we will compute their factorials for the denominator
+            n_plus_m_d2_minus_k = (n_index + m_index)//2 - k  # (n+m)/2 - k
+            n_minus_m_d2_minus_k = (n_index - m_index)//2 - k # (n-m)/2 - k
+            
+            # Compute denominator: k! * ((n+m)/2 - k)! *((n-m)/2 - k)!
+            denominator = math.factorial(k) * math.factorial(n_plus_m_d2_minus_k) * math.factorial(n_minus_m_d2_minus_k)
+            
+            # Update the total sum
+            r_value += numerator/denominator * rho**(n_index-2*k)
+        
+    return r_value
