@@ -221,6 +221,7 @@ def evaluate_zs_from_surface(
         verbose (bool): Optional. If true, more verbosity for errors
 
     Returns:
+        success (bool): True if there were no errors during computation
         z_values (np.array): The array containing the z value of the surface in the coordinates
     """
     
@@ -229,16 +230,20 @@ def evaluate_zs_from_surface(
     
     # Loop to compute the z value on all the given points
     for (rho, varphi) in zip(rho_coordinates, varphi_coordinates):
-        z_value = compute_surface_value_at_point(rho,
-                                                 varphi,
-                                                 zernike_polynomials,
-                                                 verbose=verbose)
+        success, z_value = compute_surface_value_at_point(rho,
+                                                          varphi,
+                                                          zernike_polynomials,
+                                                          verbose=verbose)
+
+        if not success:
+            return success, None
+        
         z_list.append(z_value)
     
     # Convert list to numpy array
     z_values = np.array(z_list)
     
-    return z_values
+    return success, z_values
 
 
 def compute_zernike_polynomial_for_meshgrid(m_index,
