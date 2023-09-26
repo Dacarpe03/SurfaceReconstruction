@@ -4,6 +4,7 @@ import numpy as np
 from constants import *
 from surfaces import *
 
+
 def plot_surface(zernike_polynomials,
                  n_radiuses=50,
                  n_angles=50,
@@ -71,3 +72,30 @@ def plot_surface(zernike_polynomials,
     ax.plot_surface(X, Y, surface_mesh, cmap=plt.cm.YlGnBu_r)
     plt.show()
     return None
+
+
+def plot_2d_polar_points(rho_samples, 
+                         varphi_samples):
+    """
+    Plots a 2d graphic with points given radiuses and thetas
+    
+    Input:
+        rho_samples (np.array): The array containing the radius polar coordinates of the points
+        varphi_samples (np.array): The array containing the angle polar coordinates of the points
+    
+    Returns:
+        None
+    """
+    
+    # Create a plot with polar coordinates
+    fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
+    
+    # Remove radius ticks
+    ax.set_rticks([])
+    
+    angles = [0, 45, 90, 135, 180, 225, 270, 315]
+    labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
+    ax.set_thetagrids(angles, labels=labels)
+
+    # Plot the points
+    ax.plot(varphi_samples, rho_samples, 'k.')
