@@ -180,14 +180,14 @@ def compute_surface_value_at_point(
         verbose (bool): Optional. True if more verbosity for errors
         
     Returns:
-        bool (bool): True if the computation had no failures
+        success (bool): True if the computation had no failures
         z_value (float): The value of the surface at the point
     """
         
     # Initialize the z value of the point
     z_value = 0
         
-    # For compute the point value on each zernike polynomials and add them all with a weighted sum
+    # For loop to compute the point value on each zernike polynomials and add them all with a weighted sum
     for m_index, n_index, coefficient in zernike_polynomials:
         success, actual_value = compute_zernike_polynomial_at_point(m_index,
                                                                     n_index,
@@ -195,9 +195,11 @@ def compute_surface_value_at_point(
                                                                     varphi,
                                                                     verbose=verbose)
 
+        # If there was an error then return
         if not success:
             return success, None
 
+        # Add the weighted value
         weighted_value = coefficient * actual_value
         z_value += weighted_value
 
