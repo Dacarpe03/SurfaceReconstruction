@@ -89,7 +89,7 @@ def compute_radial_value(
         
     # If the module of n-m is even then we compute
     if module == 0:
-        
+
         # Compute the index of the sumatory and add 1 for the loop
         sumatory_index = (n_minus_m)//2 + 1
             
@@ -126,9 +126,10 @@ def compute_zernike_polynomial_at_point(
         n_index (int): The n number of the Zernike Polynomial
         rho (float): The distance of the point to the center (radius in polar coordinates) 
         varphi (float): The angle of the point with respect to x-axis (angle in polar coordinates)
+        verbose (bool): If True, error and warning messages will show in the terminal
             
     Returns:
-        success (bool)
+        success (bool): True if the computing did not fail
         zernike_value (float): The value of the zernike_polynomial at the point
     """
         
@@ -153,7 +154,7 @@ def compute_zernike_polynomial_at_point(
     r_value = compute_radial_value(m_abs_index, 
                                    n_index, 
                                    rho,
-                                   verbose)
+                                   verbose=verbose)
         
     # Compute the zernike value
     if m_sign == 1:
