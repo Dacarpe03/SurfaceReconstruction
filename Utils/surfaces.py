@@ -207,12 +207,12 @@ def compute_surface_value_at_point(
     return success, z_value
 
 
-def evaluate_z_from_surface(rho_coordinates,
+def evaluate_zs_from_surface(rho_coordinates,
                             varphi_coordinates,
                             zernike_polynomials,
                             verbose=False):
     """
-    Evaluates the z value of a surface given its zernike polynomials and polar coordinates of points
+    Evaluates the z values of a surface given its zernike polynomials and polar coordinates of a set of points
     
     Input:
         rho_coordinates (np.array): The array containing the radius polar coordinates of the points
@@ -326,7 +326,7 @@ def generate_data_for_training(n_data,
         rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
             
         # Compute the values of the surface at the points
-        surface_values = evaluate_z_from_surface(rho_coordinates,
+        surface_values = evaluate_zs_from_surface(rho_coordinates,
                                                  varphi_coordinates,
                                                  zernike_polynomials,
                                                  verbose=verbose)
