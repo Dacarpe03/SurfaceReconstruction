@@ -5,10 +5,11 @@ from constants import *
 from surfaces import *
 
 
-def plot_surface(zernike_polynomials,
-                 n_radiuses=50,
-                 n_angles=50,
-                 verbose=False):
+def plot_surface(
+    zernike_polynomials,
+    n_radiuses=50,
+    n_angles=50,
+    verbose=False):
     """
     Plots a surface give the zernike polynomials and its coefficients
     
@@ -74,8 +75,9 @@ def plot_surface(zernike_polynomials,
     return None
 
 
-def plot_2d_polar_points(rho_samples, 
-                         varphi_samples):
+def plot_2d_polar_points(
+    rho_samples, 
+    varphi_samples):
     """
     Plots a 2d graphic with points given radiuses and thetas
     
