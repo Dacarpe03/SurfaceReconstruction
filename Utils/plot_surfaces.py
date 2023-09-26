@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from constants import *
+from surfaces import *
 
 def plot_surface(zernike_polynomials,
                  n_radiuses=50,
