@@ -242,42 +242,6 @@ def evaluate_zs_from_surface(
     return z_values
 
 
-def polar_samples_unit_circle_for_data_generation(
-    n_circles=5, 
-    n_samples=20):
-    """
-    This function samples radiuses and angles from the unit disk to create random surfaces
-    
-    Input:
-        n_circles (int): Optional. The number of concentric circles where the points will be sampled from
-        n_samples (int): Optional. The number of samples of the outer circle of radius one. For the rest the number
-                        of samples is proportional to the radius.
-                        
-    Returns:
-        rho_samples (np.array): The array containing the radius polar coordinates of the points
-        varphi_samples (np.array): The array containing the angle polar coordinates of the points
-    """
-    
-    # Create empty arrays for the samples
-    rho_samples = np.empty([0])
-    varphi_samples = np.empty([0])
-    
-    # Sample points from each concentric circle
-    for i in range(1, n_circles+1):
-        # Each circle has a number of sample proportional to its radius
-        n_subsamples = round((1 - (n_circles - i)/n_circles) * n_samples)
-        
-        # Sample radius and angles (radius is always the same)
-        i_radiuses = np.full((n_subsamples,), i/n_circles)
-        i_thetas = np.arange(0, 2* np.pi, 2* np.pi/n_subsamples)
-        
-        # Append the circle samples to the global samples
-        rho_samples = np.concatenate((rho_samples, i_radiuses))
-        varphi_samples = np.concatenate((varphi_samples, i_thetas))
-    
-    return rho_samples, varphi_samples
-
-
 def polar_samples_unit_circle_for_plotting(n_radiuses=50, 
                                            n_angles=50):
     """
