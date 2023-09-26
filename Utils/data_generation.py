@@ -89,6 +89,32 @@ def get_random_zernike_coefficients():
     return zernike_polynomials
 
 
+def generate_zernike_polynomial_tuples_from_coefficients(
+    zernike_coefficients):
+    """
+    Generates the zernike polynomial tuples with the coefficient of each one of them from a list of zernike coefficients
+
+    Input:
+        zernike_coefficients (list):
+
+    Returns:
+        zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
+
+    """
+    zernike_polynomials = []
+    
+    # Create the zernike tuples containing m index, n index and coefficient of the polynomial
+    for zpi, zpc in zip(ZERNIKE_POLYNOMIALS_INDEXES, zernike_coefficients):
+        
+        # Create the combined tuple
+        zp = zpi + (zpc,)
+        
+        # Append it to the list of zernike polynomials with coefficients
+        zernike_polynomials.append(zp)
+        
+    return zernike_polynomials
+
+
 def generate_data_for_training(
     n_data,
     features_file_path,

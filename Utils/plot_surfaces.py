@@ -76,6 +76,30 @@ def plot_surface(
     return None
 
 
+def plot_surface_from_zernike_coefficients(
+    zernike_coefficients,
+    verbose=False):
+    
+    """
+    This function plots a surface given its zernike coefficients
+
+    Input:
+        zernike_coefficients (list): A list of zernike coefficients
+
+    Returns:
+        None
+    """
+
+    # First create the zernike polynomial tuples
+    zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(zernike_coefficients)
+
+    # Then plot the surface
+    plot_surface(zernike_polynomials, 
+                 verbose=verbose)
+
+    return None
+
+
 def plot_2d_polar_points(
     rho_samples, 
     varphi_samples):
