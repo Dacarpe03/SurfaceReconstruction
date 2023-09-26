@@ -207,10 +207,11 @@ def compute_surface_value_at_point(
     return success, z_value
 
 
-def evaluate_zs_from_surface(rho_coordinates,
-                            varphi_coordinates,
-                            zernike_polynomials,
-                            verbose=False):
+def evaluate_zs_from_surface(
+    rho_coordinates,
+    varphi_coordinates,
+    zernike_polynomials,
+    verbose=False):
     """
     Evaluates the z values of a surface given its zernike polynomials and polar coordinates of a set of points
     
@@ -218,8 +219,8 @@ def evaluate_zs_from_surface(rho_coordinates,
         rho_coordinates (np.array): The array containing the radius polar coordinates of the points
         varphi_coordinates (np.array): The array containing the angle polar coordinates of the points
         zernike_polynomials (list): A list of tuples with zernike polynomials info (m_index, n_index, coefficient)
-        verbose (bool): Optional. True if more verbosity for errors
-        
+        verbose (bool): Optional. If true, more verbosity for errors
+
     Returns:
         z_values (np.array): The array containing the z value of the surface in the coordinates
     """
@@ -265,8 +266,9 @@ def get_random_zernike_coefficients():
     return zernike_polynomials
 
 
-def polar_samples_unit_circle_for_data_generation(n_circles=5, 
-                                                  n_samples=20):
+def polar_samples_unit_circle_for_data_generation(
+    n_circles=5, 
+    n_samples=20):
     """
     This function samples radiuses and angles from the unit disk to create random surfaces
     
@@ -298,55 +300,6 @@ def polar_samples_unit_circle_for_data_generation(n_circles=5,
         varphi_samples = np.concatenate((varphi_samples, i_thetas))
     
     return rho_samples, varphi_samples
-
-
-def generate_data_for_training(n_data,
-                               features_file_path,
-                               labels_file_path,
-                               verbose=False):
-    """
-    Generates a dataframe with data for training
-    
-    Input:
-        n_data (int): Number of data points to train (A data point consisting on a surface and its zernike coefficients)
-        verbose (bool): Optional. True if more verbosity for errors
-        
-    Returns:
-        surface_dataframe (pd.DataFrame): A dataframe with columns 'surface_values' and 'zernike_coefficients' contaning arrays
-    """
-    
-    surface_list = []
-    coefficient_list = []
-    
-    for i in range(0, n_data):
-        # Get the zernike polynomials with their coefficients
-        zernike_polynomials = get_random_zernike_coefficients()
-        
-        # Get the points polar coordinates to sample from the surface created by the zernike polynomials
-        rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
-            
-        # Compute the values of the surface at the points
-        surface_values = evaluate_zs_from_surface(rho_coordinates,
-                                                 varphi_coordinates,
-                                                 zernike_polynomials,
-                                                 verbose=verbose)
-        
-        # Append the surface values to the surface list
-        surface_list.append(surface_values)
-        
-        # Get last element (zernike coefficient) of the zernike polynomials tuples to store them in the dataframe
-        coefficients = list(map(lambda x: x[-1], zernike_polynomials))
-        
-        # Convert the list to a numpy array
-        np_coefficients = np.array(coefficients)
-        
-        # Append the surface zernike coefficients to the list of coefficients
-        coefficient_list.append(np_coefficients)
-        
-    # Create the dataframe and add the data
-    np.save(features_file_path, surface_list)
-    np.save(labels_file_path, coefficient_list)
-    return None
 
 
 def polar_samples_unit_circle_for_plotting(n_radiuses=50, 
