@@ -1,6 +1,51 @@
+#### TODO COMMENT RETURNS OF READ DATA
+
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+
+
+def read_data_for_training(
+	features_file_path,
+	labels_file_path,
+	train_perc=0.8,
+	val_perc=0.1,
+	test_perc=0.1):
+	"""
+	Function to read and split our data
+
+	Input:
+		features_file_path (string): The .npy file with the features dataset
+		labels_file_path (string): The .npy file with the labels dataset
+		train_perc (float): Default 0.8. The percentage of the dataset used for training the dataset
+		val_perc (float): Default 0.1. The percentage of the dataset used for validation the dataset
+		test_perc (float): Default 0.1. The percentage of the dataset used for test the dataset
+		
+	Returns:
+		train_features (np)
+	"""
+
+	# Read the files with the dataset
+	features = np.load(features_file_path, allow_pickle=True)
+	labels = np.load(labels_file_path, allow_pickle=True)
+	
+	# Compute subset sizes
+	total_rows = len(features)
+	train_size = int(train_perc * total_rows)
+	val_size = int(val_perc * total_rows)
+
+	# Split the data based on sizes
+	train_features = features[:train_size]
+	train_labels = labels[:train_size]
+
+	val_features = features[train_size:train_size + val_size]
+	val_labels = labels[train_size:train_size + val_size]
+
+	test_features = features[train_size + val_size:]
+	test_labels = labels[train_size + val_size:]
+
+	return train_features, train_labels, val_features, val_labels, test_features, test_labels
 
 
 def create_linear_architecture(
@@ -75,3 +120,34 @@ def compile_linear_model(
     model.compile(loss=loss_function,
                   optimizer=optimizer,
                   metrics=[metric])
+
+
+def train_linear_model(
+	model,
+	train_features,
+	train_labels,
+	batch_size,
+	epochs,
+	val_features,
+	val_labels,
+	callbacks
+	):
+
+	history = model.fit(train_features,
+			  			train_labels,
+			  			batch_size=batch_size,
+			  			epochs=epochs,
+			  			validation_data=(val_features, val_labels),
+			  			callbacks=callbacks,
+			  			verbose=1)
+	
+	return history
+
+
+def plot_model_history(history):
+	results = pd.DataFrame(history.history)
+	results.plot(figsize=(8,5))
+	plt.grid(True)
+	plt.xlabel('Epochs')
+	plt.ylabel('Mean Squared Error')
+	plt.show()
