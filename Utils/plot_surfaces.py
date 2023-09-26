@@ -3,6 +3,7 @@ import numpy as np
 
 from constants import *
 from surfaces import *
+from data_generation import *
 
 
 def plot_surface(
