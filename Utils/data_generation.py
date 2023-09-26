@@ -2,6 +2,7 @@ import numpy as np
 import random
 
 from constants import *
+from surfaces import evaluate_zs_from_surface
 
 
 def polar_samples_unit_circle_for_data_generation(
