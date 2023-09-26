@@ -53,6 +53,9 @@ def check_zernike_parameters(
             msg = f"The radius (ro) must be between -1 and 1. Radius is {rho}"
             print_verbose_msg(msg, ERROR)
         return False
+
+
+    # If everything is correct, return True
     return True
 
 
@@ -68,6 +71,7 @@ def compute_radial_value(
         m_index (int): The m number of the Zernike Polynomial
         n_index (int): The n number of the Zernike Polynomial
         rho (float): The distance of the point to the center (radius in polar coordinates)
+        verbose (bool): If True, error and warning messages will show in the terminal
             
     Returns:
         r_value(float): The value of the radial polynomial at rho
@@ -80,12 +84,12 @@ def compute_radial_value(
     # Value if n-m is odd
     r_value = 0
         
-        
     n_minus_m = n_index - m_index
     module = n_minus_m % 2
         
-    # If the module of n-m is even calculate
+    # If the module of n-m is even then we compute
     if module == 0:
+        
         # Compute the index of the sumatory and add 1 for the loop
         sumatory_index = (n_minus_m)//2 + 1
             
