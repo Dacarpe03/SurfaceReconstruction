@@ -2,6 +2,7 @@ import numpy as np
 import random
 
 from constants import *
+from surfaces import evaluate_zs_from_surface
 
 
 def polar_samples_unit_circle_for_data_generation(
@@ -144,11 +145,14 @@ def generate_data_for_training(
         rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
             
         # Compute the values of the surface at the points
-        surface_values = evaluate_zs_from_surface(rho_coordinates,
-                                                 varphi_coordinates,
-                                                 zernike_polynomials,
-                                                 verbose=verbose)
+        success, surface_values = evaluate_zs_from_surface(rho_coordinates,
+                                                           varphi_coordinates,
+                                                           zernike_polynomials,
+                                                           verbose=verbose)
         
+        if not success:
+            return False, None
+
         # Append the surface values to the surface list
         surface_list.append(surface_values)
         
@@ -160,7 +164,7 @@ def generate_data_for_training(
         
         # Append the surface zernike coefficients to the list of coefficients
         coefficient_list.append(np_coefficients)
-        
+    
     # Create the dataframe and add the data
     np.save(features_file_path, surface_list)
     np.save(labels_file_path, coefficient_list)
