@@ -35,6 +35,27 @@ def polar_samples_unit_circle_for_data_generation(
         varphi_samples = np.concatenate((varphi_samples, i_thetas))
     
     return rho_samples, varphi_samples
+
+
+
+def polar_samples_unit_circle_for_plotting(n_radiuses=50, 
+                                           n_angles=50):
+    """
+    This function samples radiuses and angles from the unit disk
+    
+    Input:
+        n_radiuses (int): Optional. The number of radiuses to create the mesh
+        n_samples (int): Optional. The number of angles to create the mesh
+                        
+    Returns:
+        rho_samples (np.array): The array containing the radius polar coordinates of the points
+        varphi_samples (np.array): The array containing the angle polar coordinates of the points
+    """
+    
+    # Create two arrays with equidistant points
+    rho_samples = np.linspace(0, 1, n_radiuses)
+    varphi_samples = np.linspace(0, 2*np.pi, n_angles)
+    return rho_samples, varphi_samples
     
 
 def get_random_zernike_coefficients():
