@@ -5,13 +5,15 @@ from tensorflow import keras
 import matplotlib.pyplot as plt
 
 from constants import MODELS_FOLDER_PATH, \
+											DATA_FOLDER_PATH, \
 											MODELS_DESCRIPTION_FILE_PATH, \
-											KERAS_SUFFIX
+											KERAS_SUFFIX, \
+											NUMPY_SUFFIX
 
 
 def read_data_for_training(
-	features_file_path,
-	labels_file_path,
+	features_filename,
+	labels_filename,
 	train_perc=0.8,
 	val_perc=0.1,
 	test_perc=0.1):
@@ -33,6 +35,9 @@ def read_data_for_training(
 		test_features (np.array): An np.array containing np.array with the train features
 		test_labels (np.array): An np.array containing np.array with the train features
 	"""
+
+	features_file_path = f"{DATA_FOLDER_PATH}/{features_filename}{NUMPY_SUFFIX}"
+	labels_file_path = f"{DATA_FOLDER_PATH}/{labels_filename}{NUMPY_SUFFIX}"
 
 	# Read the files with the dataset
 	features = np.load(features_file_path, allow_pickle=True)
