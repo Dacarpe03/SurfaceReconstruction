@@ -36,6 +36,7 @@ def read_data_for_training(
 		test_labels (np.array): An np.array containing np.array with the train features
 	"""
 
+	# Create the path to the data files
 	features_file_path = f"{DATA_FOLDER_PATH}/{features_filename}{NUMPY_SUFFIX}"
 	labels_file_path = f"{DATA_FOLDER_PATH}/{labels_filename}{NUMPY_SUFFIX}"
 
@@ -97,15 +98,21 @@ def create_linear_architecture(
 
 	# Create the hidden layers of the neural network
 	for neurons in hidden_layer_sizes:
+
+		# Define layer
 		model.add(keras.layers.Dense(neurons,
-			kernel_regularizer=regularizer,
-			kernel_initializer=keras.initializers.HeNormal(seed=None),
-			use_bias=False))
+							kernel_regularizer=regularizer,
+							kernel_initializer=keras.initializers.HeNormal(seed=None),
+							use_bias=False))
+
+		# Add normalization
 		if use_batch_normalization:
 			model.add(keras.layers.BatchNormalization())
 
+		# Define the activation function
 		model.add(keras.layers.Activation(hidden_activation))
 
+	# Add output layer
 	model.add(keras.layers.Dense(output_size,
 				activation=output_activation))
 
@@ -162,12 +169,12 @@ def train_linear_model(
 		history (): The training history of the model
 	"""
 	history = model.fit(train_features,
-		train_labels,
-		batch_size=batch_size,
-		epochs=epochs,
-		validation_data=(val_features, val_labels),
-		callbacks=callbacks,
-		verbose=1)
+											train_labels,
+											batch_size=batch_size,
+											epochs=epochs,
+											validation_data=(val_features, val_labels),
+											callbacks=callbacks,
+											verbose=1)
 
 	return history
 
