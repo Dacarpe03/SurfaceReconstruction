@@ -3,7 +3,8 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 
-from constants import MODELS_FOLDER_PATH
+from constants import MODELS_FOLDER_PATH, \
+MODELS_DESCRIPTION_FILE_PATH
 
 
 def read_data_for_training(
@@ -61,8 +62,7 @@ def create_linear_architecture(
 	hidden_activation,
 	output_activation,
 	use_batch_normalization=True,
-	name="SurfaceReconstructor"
-	):
+	name="SurfaceReconstructor"):
 
 	"""
 	Defines de architecture of the neural network
@@ -86,24 +86,23 @@ def create_linear_architecture(
 
 	# Create input layer
 	model.add(keras.layers.InputLayer(input_shape=input_shape,
-																		batch_size=None))
+		batch_size=None))
 
 	# Create the hidden layers of the neural network
-  for neurons in hidden_layer_sizes:
+	for neurons in hidden_layer_sizes:
+		model.add(keras.layers.Dense(neurons,
+			kernel_regularizer=regularizer,
+			kernel_initializer=keras.initializers.HeNormal(seed=None),
+			use_bias=False))
+		if use_batch_normalization:
+			model.add(keras.layers.BatchNormalization())
 
-  	model.add(keras.layers.Dense(neurons,
-  															 kernel_regularizer=regularizer,
-  															 kernel_initializer=keras.initializers.HeNormal(seed=None),
-  															 use_bias=False))
-  	if use_batch_normalization:
-  		model.add(keras.layers.BatchNormalization())
+		model.add(keras.layers.Activation(hidden_activation))
 
-  	model.add(keras.layers.Activation(hidden_activation))
+	model.add(keras.layers.Dense(output_size,
+				activation=output_activation))
 
-  model.add(keras.layers.Dense(output_size,
-  														 activation=output_activation))
-
- 	return model
+	return model
 
 
 
@@ -111,8 +110,7 @@ def compile_linear_model(
 	model,
 	loss_function,
 	optimizer,
-	metric
-	):
+	metric):
   """
 	Tells the model how to train
 	
@@ -124,11 +122,10 @@ def compile_linear_model(
 
 	Returns:
 		None
-  """
-  model.compile(loss=loss_function,
-                optimizer=optimizer,
-                metrics=[metric])
+	"""
+	model.compile(loss=loss_function, optimizer=optimizer, metrics=[metric])
 
+	return None
 
 def train_linear_model(
 	model,
@@ -138,9 +135,8 @@ def train_linear_model(
 	epochs,
 	val_features,
 	val_labels,
-	callbacks
-	):
-	
+	callbacks):
+
 	"""
 	Fits the model to the train instances of the data.
 
@@ -158,13 +154,13 @@ def train_linear_model(
 		history (): The training history of the model
 	"""
 	history = model.fit(train_features,
-			  						  train_labels,
-			  							batch_size=batch_size,
-			  							epochs=epochs,
-			  							validation_data=(val_features, val_labels),
-			  							callbacks=callbacks,
-			  							verbose=1)
-	
+		train_labels,
+		batch_size=batch_size,
+		epochs=epochs,
+		validation_data=(val_features, val_labels),
+		callbacks=callbacks,
+		verbose=1)
+
 	return history
 
 
@@ -186,6 +182,8 @@ def plot_model_history(
 	plt.ylabel('Mean Squared Error')
 	plt.show()
 
+	return None
+
 
 def store_model(
 	model,
@@ -193,5 +191,20 @@ def store_model(
 	description):
 	"""
 	Stores the model in the DATA_FOLDER with the name with a description in the neural network descriptions file
-	"""	
+
+	Input:
+		model (keras.Sequential or other): The model to save in the models folder
+		model_name (string): The name of the model
+		description (string): The description of the model 
+
+	Returns:
+		None
+	"""
+	model_file_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
+	model.save(model_file_path)
+
+	with open(MODELS_DESCRIPTION_FILE_PATH, 'a') as f:
+		f.writeline(model_name)
+		f.writeline(description)
+
 	return None
