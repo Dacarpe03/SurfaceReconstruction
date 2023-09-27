@@ -57,7 +57,7 @@ def create_linear_architecture(
 	hidden_layer_sizes,
 	regularizer,
 	hidden_activation,
-	output_activation
+	output_activation,
 	use_batch_normalization=True,
 	name="SurfaceReconstructor"
 	):
@@ -165,7 +165,8 @@ def train_linear_model(
 	return history
 
 
-def plot_model_history(history):
+def plot_model_history(
+	history):
 	"""
 	Plots the history of the model in a graph
 
@@ -181,3 +182,13 @@ def plot_model_history(history):
 	plt.xlabel('Epochs')
 	plt.ylabel('Mean Squared Error')
 	plt.show()
+
+
+def store_model(
+	model,
+	model_name,
+	description):
+	"""
+
+	"""	
+	return None
