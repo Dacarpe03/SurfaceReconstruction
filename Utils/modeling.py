@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
+
 from constants import MODELS_FOLDER_PATH, \
 											DATA_FOLDER_PATH, \
 											MODELS_DESCRIPTION_FILE_PATH, \
