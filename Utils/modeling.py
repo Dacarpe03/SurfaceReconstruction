@@ -3,6 +3,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 
+
 def read_data_for_training(
 	features_file_path,
 	labels_file_path,

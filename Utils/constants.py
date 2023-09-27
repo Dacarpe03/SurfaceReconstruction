@@ -1,6 +1,6 @@
 # Folders
-DATA_FOLDER = "./Data"
-MODELS_FOLDER = "./Models"
+DATA_FOLDER_PATH = "./Data"
+MODELS_FOLDER_PATH = "./Models"
 
 # Verbosity constants
 ERROR = 1
