@@ -1,3 +1,7 @@
+# Folders
+DATA_FOLDER = "./Data"
+MODELS_FOLDER = "./Models"
+
 # Verbosity constants
 ERROR = 1
 WARNING = 2

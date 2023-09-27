@@ -3,7 +3,6 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 
-
 def read_data_for_training(
 	features_file_path,
 	labels_file_path,
@@ -75,33 +74,34 @@ def create_linear_architecture(
 		use_batch_normalization (bool): If True, then add batch normalization to the hidder layers
 		name (string): The name of the model
 
-	Output:
+	Returns:
 		model (keras.Sequential): A keras neural network model with the architecture specified
 	"""
 
 	# Create a sequential model
-    model = keras.Sequential(name=name)
+	model = keras.Sequential(name=name)
 
-    # Create the first layer
-    model.add(keras.layers.InputLayer(input_shape=input_shape,
-                                      batch_size=None))
-    
-    # Create the hidden layers of the neural network
-    for neurons in hidden_layer_sizes:
-        model.add(keras.layers.Dense(neurons,
-                                     kernel_regularizer=regularizer,
-                                     kernel_initializer=keras.initializers.HeNormal(seed=None),
-                                     use_bias=False
-                                     ))
-        if use_batch_normalization:
-        	model.add(keras.layers.BatchNormalization())
+	# Create input layer
+	model.add(keras.layers.InputLayer(input_shape=input_shape,
+																		batch_size=None))
 
-        model.add(keras.layers.Activation(hidden_activation))
-        
-    model.add(keras.layers.Dense(output_size,
-                                 activation=output_activation
-                                ))
-    return model
+	# Create the hidden layers of the neural network
+  for neurons in hidden_layer_sizes:
+
+  	model.add(keras.layers.Dense(neurons,
+  															 kernel_regularizer=regularizer,
+  															 kernel_initializer=keras.initializers.HeNormal(seed=None),
+  															 use_bias=False))
+  	if use_batch_normalization:
+  		model.add(keras.layers.BatchNormalization())
+
+  	model.add(keras.layers.Activation(hidden_activation))
+
+  model.add(keras.layers.Dense(output_size,
+  														 activation=output_activation))
+
+ 	return model
+
 
 
 def compile_linear_model(
@@ -110,7 +110,7 @@ def compile_linear_model(
 	optimizer,
 	metric
 	):
-   	"""
+  """
 	Tells the model how to train
 	
 	Input:
@@ -121,10 +121,10 @@ def compile_linear_model(
 
 	Returns:
 		None
-   	"""
-    model.compile(loss=loss_function,
-                  optimizer=optimizer,
-                  metrics=[metric])
+  """
+  model.compile(loss=loss_function,
+                optimizer=optimizer,
+                metrics=[metric])
 
 
 def train_linear_model(
@@ -189,6 +189,6 @@ def store_model(
 	model_name,
 	description):
 	"""
-
+	Stores the model in the DATA_FOLDER with the name with a description in the neural network descriptions file
 	"""	
 	return None
