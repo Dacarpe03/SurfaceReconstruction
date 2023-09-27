@@ -207,8 +207,8 @@ def store_model(
 	model.save(model_file_path)
 
 	with open(MODELS_DESCRIPTION_FILE_PATH, 'a') as f:
-		f.write(f"===={mode_name}====\n")
-		f.writeline(description)
+		f.write(f"===={model_name}====\n")
+		f.write(description)
 		f.write("\n")
 
 	return None

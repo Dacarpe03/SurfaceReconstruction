@@ -1,0 +1,21 @@
+====TestModel====
+# Neural network architecture hyperparameters 
+input_size = train_features[0].shape 
+output_size = len(train_labels[0]) 
+hidden_layer_sizes = [512, 256, 64] 
+regularizer = keras.regularizers.L1L2(l1=0.001,l2=0.1) 
+hidden_activation = 'relu' 
+output_activation = 'linear' 
+use_batch_normalization = True 
+name = 'LinearSurfaceReconstructor' 
+# Compilation hyperparameters 
+loss_function = tf.keras.losses.MeanSquaredError() 
+learning_rate = 0.01 
+optimizer = Adam(learning_rate=learning_rate, beta_1=0.9, beta_2=0.999) 
+metric = tf.keras.metrics.MeanSquaredError() 
+# Training hyperparameters 
+epochs = 750 
+batch_size = 512 
+reduce_lr = ReduceLROnPlateau('mean_squared_error', factor=0.1, patience=150, verbose=1) 
+early_stop = EarlyStopping('mean_squared_error', patience=500, verbose=1) 
+callbacks = [reduce_lr, early_stop]
