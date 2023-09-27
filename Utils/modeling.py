@@ -18,7 +18,7 @@ def read_data_for_training(
 	val_perc=0.1,
 	test_perc=0.1):
 	"""
-	Function to read and split our data
+	Function to read and split our data given a name (NO PATH NOR SUFFIX, JUST THE NAME)
 
 	Input:
 		features_file_path (string): The .npy file with the features dataset
