@@ -2,6 +2,9 @@
 DATA_FOLDER_PATH = "./Data"
 MODELS_FOLDER_PATH = "./Models"
 
+# Files
+MODELS_DESCRIPTION_FILE_PATH = "./models_descriptions.txt"
+
 # Verbosity constants
 ERROR = 1
 WARNING = 2
