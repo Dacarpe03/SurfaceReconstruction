@@ -2,9 +2,11 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+import matplotlib.pyplot as plt
 
 from constants import MODELS_FOLDER_PATH, \
-MODELS_DESCRIPTION_FILE_PATH
+											MODELS_DESCRIPTION_FILE_PATH, \
+											KERAS_SUFFIX
 
 
 def read_data_for_training(
@@ -105,27 +107,28 @@ def create_linear_architecture(
 	return model
 
 
-
 def compile_linear_model(
 	model,
 	loss_function,
 	optimizer,
 	metric):
-  """
+	"""
 	Tells the model how to train
-	
+
 	Input:
-		model (keras.Sequential): The sequential model to compile
+		model(keras.Sequential): The sequential model to compile
 		loss_function (keras.losses): The loss function used to update the weights of the neurons (eg. MeanSquaredError())
 		optimizer (keras.optimizers): The optimizer used to update the weights of the neurons (eg. Adam)
-		metric (keras.metrics): The metrics to monitor during the traning (eg. MeanSquaredError())
+		metric (keras.metrics): The metrics to monitor during the training (eg. MeanSquaredError())
 
 	Returns:
 		None
 	"""
-	model.compile(loss=loss_function, optimizer=optimizer, metrics=[metric])
-
+	model.compile(loss=loss_function,
+								optimizer=optimizer,
+								metrics=[metric])
 	return None
+
 
 def train_linear_model(
 	model,
