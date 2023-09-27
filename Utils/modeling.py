@@ -139,22 +139,42 @@ def train_linear_model(
 	):
 	
 	"""
-	Fits the model to the train instances of the data
+	Fits the model to the train instances of the data.
+
 	Input:
-		model (keras.Sequential):
+		model (keras.Sequential): The sequential model to train
+		train_features (np.array): An np.array containing np.array with the train features
+		train_labels (np.array): An np.array containing np.array with the train features
+		batch_size(int): The batch size of training samples used before each weight update
+		epochs (int): The number of times the training goes through the training data
+		val_features (np.array): An np.array containing np.array with the train features
+		val_labels (np.array): An np.array containing np.array with the train features 
+		callbacks (list): A list of keras callbacks used during the training.
+
+	Returns:
+		history (): The training history of the model
 	"""
 	history = model.fit(train_features,
-			  			train_labels,
-			  			batch_size=batch_size,
-			  			epochs=epochs,
-			  			validation_data=(val_features, val_labels),
-			  			callbacks=callbacks,
-			  			verbose=1)
+			  						  train_labels,
+			  							batch_size=batch_size,
+			  							epochs=epochs,
+			  							validation_data=(val_features, val_labels),
+			  							callbacks=callbacks,
+			  							verbose=1)
 	
 	return history
 
 
 def plot_model_history(history):
+	"""
+	Plots the history of the model in a graph
+
+	Input:
+		history (): The training history of the model
+
+	Returns:
+		None
+	"""
 	results = pd.DataFrame(history.history)
 	results.plot(figsize=(8,5))
 	plt.grid(True)
