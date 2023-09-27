@@ -1,5 +1,3 @@
-#### TODO COMMENT RETURNS OF READ DATA
-
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -23,7 +21,12 @@ def read_data_for_training(
 		test_perc (float): Default 0.1. The percentage of the dataset used for test the dataset
 		
 	Returns:
-		train_features (np)
+		train_features (np.array): An np.array containing np.array with the train features
+		train_labels (np.array): An np.array containing np.array with the train features
+		val_features (np.array): An np.array containing np.array with the train features
+		val_labels (np.array): An np.array containing np.array with the train features
+		test_features (np.array): An np.array containing np.array with the train features
+		test_labels (np.array): An np.array containing np.array with the train features
 	"""
 
 	# Read the files with the dataset
