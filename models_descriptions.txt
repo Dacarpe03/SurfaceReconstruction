@@ -49,7 +49,7 @@ regularizer = keras.regularizers.L1L2(l1=0.001,l2=0.1)
 hidden_activation = 'relu' 
 output_activation = 'linear' 
 use_batch_normalization = True 
-name = 'LinearSurfaceReconstructor' 
+name = 'BigLinearModel' 
 # Compilation hyperparameters 
 loss_function = tf.keras.losses.MeanSquaredError() 
 learning_rate = 0.01 
