@@ -203,13 +203,16 @@ def store_model(
 	Returns:
 		None
 	"""
+	# Create the model path
 	model_file_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
+	# Save the model
 	model.save(model_file_path)
 
+	# Save its description
 	with open(MODELS_DESCRIPTION_FILE_PATH, 'a') as f:
 		f.write(f"===={model_name}====\n")
 		f.write(description)
-		f.write("\n")
+		f.write("\n\n")
 
 	return None
 
@@ -228,3 +231,29 @@ def load_model(
 	model_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
 	model = keras.models.load_model(model_path)
 	return model
+
+
+def predict_zernike_coefficients(
+	model,
+	surface_points):
+	"""
+	Uses the model to get the coefficients of a surface given its samples
+
+	Input:
+		model (keras.models): The model that will make the prediction
+		surface_points (np.array): The array containing the z_values of the surface in the sampled points
+
+	Returns:
+		zernike_coefficients (np.array): The array containing the predicted zernike coefficients that describe the surface
+	"""
+
+	# Adjust the surface points to the neural network/model input 
+	input_surface = np.array([surface_points])
+
+	# Predict
+	output_coefficients = model.predict(input_surface)
+
+	# Get the coefficients clean
+	zernike_coefficients = output_coefficients[0]
+
+	return zernike_coefficients
