@@ -196,7 +196,7 @@ def store_model(
 	Stores the model in the DATA_FOLDER with the name with a description in the neural network descriptions file
 
 	Input:
-		model (keras.Sequential or other): The model to save in the models folder
+		model (keras.models): The model to save in the models folder
 		model_name (string): The name of the model
 		description (string): The description of the model 
 
@@ -212,3 +212,18 @@ def store_model(
 		f.write("\n")
 
 	return None
+
+
+def load_model(
+	model_name):
+	"""
+	Loads a model given its name
+
+	Input:
+		model_name (string): The name of the model to load
+
+	Returns:
+		model (keras.models): The loaded model
+	"""
+	model_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
+	model = keras.models.load_model(model_path)
