@@ -73,6 +73,7 @@ def create_linear_architecture(
 		hidden_activation (string): The name of the activation function of the hidden layers' neurons  (e.g 'relu', see keras documentation for more)
 		output_activation (string): The name of the activation function of the output layers (e.g 'linear', see keras documentation for more)
 		use_batch_normalization (bool): If True, then add batch normalization to the hidder layers
+		name (string): The name of the model
 
 	Output:
 		model (keras.Sequential): A keras neural network model with the architecture specified
@@ -117,6 +118,7 @@ def compile_linear_model(
 		loss_function (keras.losses): The loss function used to update the weights of the neurons (eg. MeanSquaredError())
 		optimizer (keras.optimizers): The optimizer used to update the weights of the neurons (eg. Adam)
 		metric (keras.metrics): The metrics to monitor during the traning (eg. MeanSquaredError())
+
 	Returns:
 		None
    	"""
@@ -135,7 +137,12 @@ def train_linear_model(
 	val_labels,
 	callbacks
 	):
-
+	
+	"""
+	Fits the model to the train instances of the data
+	Input:
+		model (keras.Sequential):
+	"""
 	history = model.fit(train_features,
 			  			train_labels,
 			  			batch_size=batch_size,
