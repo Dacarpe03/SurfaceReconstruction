@@ -207,5 +207,3 @@ def plot_2d_polar_points(
 
     # Plot the points
     ax.plot(varphi_samples, rho_samples, 'k.')
-
-
