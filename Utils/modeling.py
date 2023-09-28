@@ -270,3 +270,12 @@ def predict_zernike_coefficients(
 	zernike_coefficients = output_coefficients[0]
 
 	return zernike_coefficients
+
+
+def evaluate_model(
+	model,
+	features,
+	labels
+	):
+	results = model.evaluate(features, labels)
+	print(results)
