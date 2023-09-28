@@ -79,14 +79,14 @@ def plot_surface_enhanced(
                                             verbose=verbose)
     
     # Convert to cartesian coordinates
-    x = rho_samples*np.cos(varphi_samples)
-    y = rho_samples*np.sin(varphi_samples)
+    X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
+
     
     # Create figure
-    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=x, y=y)])
-    fig.update_layout(title='Mt Bruno Elevation', autosize=False,
-                  width=500, height=500,
-                  margin=dict(l=65, r=50, b=65, t=90))
+    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=X, y=Y)])
+    fig.update_layout(title='Surface',
+                      autosize=True,
+                      margin=dict(l=65, r=50, b=65, t=90))
     fig.show()
     return None
 
