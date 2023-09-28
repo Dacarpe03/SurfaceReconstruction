@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import plotly.graph_objecst as go
+import plotly.graph_objects as go
 import pandas as pd
 
 from constants import *
@@ -30,41 +30,12 @@ def plot_surface(
                                                                          n_angles=n_angles)
     # Create the mesh grid from the sampled data
     rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
-        
-    # Create a list with the zernike meshes
-    zernike_meshes = []
-    
-    # Calculate each the zernike mesh
-    for m_index, n_index, coefficient in zernike_polynomials:
-        success, z_mesh = compute_zernike_polynomial_for_meshgrid(m_index,
-                                                                  n_index,
-                                                                  rho_mesh,
-                                                                  varphi_mesh,
-                                                                  verbose=verbose)
 
-        if not success:
-            if verbose:
-                msg = "Unable to compute the surface"
-                print_verbose_msg(msg, 
-                                  ERROR)
-            return None
-
-        # Weight the zernike mesh with its coefficient
-        weighted_z_mesh = coefficient * z_mesh
-        
-        # Add the weighted zernike mesh to the meshes list
-        zernike_meshes.append(weighted_z_mesh)
-        
-    # Get the shape of the zernike matrix mesh
-    rows = rho_mesh.shape[0]
-    columns = rho_mesh.shape[1]
-        
-    # Create an empty surface mesh
-    surface_mesh = np.zeros((rows, columns))
-        
-    # Combine all the zernike meshes
-    for submesh in zernike_meshes:
-        surface_mesh += submesh
+    # Compute the surface mesh
+    surface_mesh = compute_surface_meshgrid(zernike_polynomials,
+                                            rho_mesh,
+                                            varphi_mesh,
+                                            verbose=verbose)
         
     # Converto to cartesian coordinates
     X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
