@@ -157,14 +157,14 @@ def plot_original_vs_reconstructed(
 
     
     # Create Surfaces
-    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', showlegend=False)
-    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y, showlegend=False)
+    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2)
+    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y)
 
     fig = make_subplots(rows=2, cols=2,
                         horizontal_spacing=0.05,
                         vertical_spacing=0.05,
-                        specs=[[{'type':'scene'}, {'type':'scene'}],
-                               [{'colspan': 2, 'type':'scene'}, None]],
+                        specs=[[{'is_3d': True, 'type':'scene'}, {'is_3d': True, 'type':'scene'}],
+                               [{'is_3d': True, 'colspan': 2, 'type':'scene'}, None]],
                         subplot_titles=['Original surface', 'AI surface', 'Original vs AI', None])
 
     fig.add_trace(og_surface, 2, 1)
