@@ -277,5 +277,16 @@ def evaluate_model(
 	features,
 	labels
 	):
+	"""
+	Evaluates a model and prints its mean squared error
+	
+	Input:
+		model (keras.models): The model to evaluate
+		features (np.array): The array with the features to predict
+		labels (np.array): The labels of the features to evaluate
+
+	Returns:
+		None
+	"""
 	results = model.evaluate(features, labels)
-	print(results)
+	print("MSE": results[1])
