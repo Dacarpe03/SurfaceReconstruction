@@ -49,8 +49,51 @@ def plot_surface(
     return None
 
 
+def plot_surface_enhanced(
+    zernike_polynomials,
+    n_radiuses=50,
+    n_angles=50,
+    verbose=False):
+    """
+    Plots a surface given the zernike polynomials and its coefficients using plotly
+    
+    Input:
+        zernike_polynomials (list): A list of tuples with polynomials info (m_index, n_index, coefficient)
+        n_radiuses (int): Optional. The number of radiuses to create the mesh
+        n_angles (int): Optional. The number of angles to create the mesh
+        
+    Returns:
+        None
+    """
+        
+    # Get the radius and angle samples
+    rho_samples, varphi_samples = polar_samples_unit_circle_for_plotting(n_radiuses=n_radiuses,
+                                                                         n_angles=n_angles)
+    # Create the mesh grid from the sampled data
+    rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
+
+    # Compute the surface mesh
+    surface_mesh = compute_surface_meshgrid(zernike_polynomials,
+                                            rho_mesh,
+                                            varphi_mesh,
+                                            verbose=verbose)
+    
+    # Convert to cartesian coordinates
+    x = rho_samples*np.cos(varphi_samples)
+    y = rho_samples*np.sin(varphi_samples)
+    
+    # Create figure
+    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=x, y=y)])
+    fig.update_layout(title='Mt Bruno Elevation', autosize=False,
+                  width=500, height=500,
+                  margin=dict(l=65, r=50, b=65, t=90))
+    fig.show()
+    return None
+
+
 def plot_surface_from_zernike_coefficients(
     zernike_coefficients,
+    enhanced=True,
     verbose=False):
     
     """
@@ -66,9 +109,13 @@ def plot_surface_from_zernike_coefficients(
     # First create the zernike polynomial tuples
     zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(zernike_coefficients)
 
-    # Then plot the surface
-    plot_surface(zernike_polynomials, 
-                 verbose=verbose)
+    if enhanced:
+        plot_surface_enhanced(zernike_polynomials,
+                              verbose=verbose)
+    else:
+        # Then plot the surface
+        plot_surface(zernike_polynomials, 
+                     verbose=verbose)
 
     return None
 
