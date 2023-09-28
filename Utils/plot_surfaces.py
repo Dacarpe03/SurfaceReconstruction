@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import pandas as pd
+
+
 
 from constants import *
 from surfaces import *
@@ -83,7 +86,7 @@ def plot_surface_enhanced(
 
     
     # Create figure
-    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=X, y=Y)])
+    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=X, y=Y), go.Surface(z=surface_mesh, x=Y, y=X)])
     fig.update_layout(title='Surface',
                       autosize=True,
                       margin=dict(l=65, r=50, b=65, t=90))
@@ -120,6 +123,60 @@ def plot_surface_from_zernike_coefficients(
     return None
 
 
+def plot_original_vs_reconstructed(
+    original_zernike_coeffs,
+    predicted_zernike_coeffs,
+    n_radiuses=50,
+    n_angles=50,
+    verbose=False):
+    
+    # Build the zernike polynomials from the coefficients
+    original_zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(original_zernike_coeffs)
+    predicted_zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(predicted_zernike_coeffs)
+
+    # Get the radius and angle samples
+    rho_samples, varphi_samples = polar_samples_unit_circle_for_plotting(n_radiuses=n_radiuses,
+                                                                         n_angles=n_angles)
+    # Create the mesh grid from the sampled data
+    rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
+
+    # Compute the original surface mesh
+    original_surface_mesh = compute_surface_meshgrid(original_zernike_polynomials,
+                                                     rho_mesh,
+                                                     varphi_mesh,
+                                                     verbose=verbose)
+
+    # Compute reconstructed surface_mesh
+    predict_surface_mesh = compute_surface_meshgrid(predicted_zernike_polynomials,
+                                                    rho_mesh,
+                                                    varphi_mesh,
+                                                    verbose=verbose)
+
+    # Convert to cartesian coordinates
+    X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
+
+    
+    # Create Surfaces
+    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', showlegend=False)
+    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y, showlegend=False)
+
+    fig = make_subplots(rows=2, cols=2,
+                        horizontal_spacing=0.05,
+                        vertical_spacing=0.05,
+                        specs=[[{'type':'scene'}, {'type':'scene'}],
+                               [{'colspan': 2, 'type':'scene'}, None]],
+                        subplot_titles=['Original surface', 'AI surface', 'Original vs AI', None])
+
+    fig.add_trace(og_surface, 2, 1)
+    fig.add_trace(ai_surface, 2, 1)
+    fig.add_trace(og_surface, 1, 1)
+    fig.add_trace(ai_surface, 1 ,2)
+    fig.update_layout(title_text='Comparison',
+                      height=1000)
+    fig.show()
+    return None
+
+
 def plot_2d_polar_points(
     rho_samples, 
     varphi_samples):
@@ -148,13 +205,3 @@ def plot_2d_polar_points(
     ax.plot(varphi_samples, rho_samples, 'k.')
 
 
-def test_plot():
-    z_data = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/api_docs/mt_bruno_elevation.csv')
-    z = z_data.values
-    sh_0, sh_1 = z.shape
-    x, y = np.linspace(0, 1, sh_0), np.linspace(0, 1, sh_1)
-    fig = go.Figure(data=[go.Surface(z=z, x=x, y=y)])
-    fig.update_layout(title='Mt Bruno Elevation', autosize=False,
-                  width=500, height=500,
-                  margin=dict(l=65, r=50, b=65, t=90))
-    fig.show()
