@@ -266,7 +266,7 @@ def predict_zernike_coefficients(
 	# Predict
 	output_coefficients = model.predict(input_surface)
 
-	# Get the coefficients clean
+	# Get the coefficients compile_linear_model
 	zernike_coefficients = output_coefficients[0]
 
 	return zernike_coefficients
@@ -289,4 +289,4 @@ def evaluate_model(
 		None
 	"""
 	results = model.evaluate(features, labels)
-	print("MSE": results[1])
+	print("MSE:", results[1])
