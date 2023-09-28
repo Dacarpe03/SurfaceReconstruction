@@ -157,8 +157,11 @@ def plot_original_vs_reconstructed(
 
     
     # Create Surfaces
-    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2)
-    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y)
+    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2, colorbar=dict(len=0.5))
+    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y, colorbar=dict(len=0.5))
+
+    og_surface_vs = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2, colorbar=dict(len=0.5))
+    ai_surface_vs = go.Surface(z=predict_surface_mesh, x=X, y=Y, colorbar=dict(len=0.5))
 
     fig = make_subplots(rows=2, cols=2,
                         horizontal_spacing=0.05,
@@ -167,12 +170,13 @@ def plot_original_vs_reconstructed(
                                [{'is_3d': True, 'colspan': 2, 'type':'scene'}, None]],
                         subplot_titles=['Original surface', 'AI surface', 'Original vs AI', None])
 
-    fig.add_trace(og_surface, 2, 1)
-    fig.add_trace(ai_surface, 2, 1)
+    fig.add_trace(og_surface_vs, 2, 1)
+    fig.add_trace(ai_surface_vs, 2, 1)
     fig.add_trace(og_surface, 1, 1)
     fig.add_trace(ai_surface, 1 ,2)
     fig.update_layout(title_text='Comparison',
-                      height=1000)
+                      height=1000,
+                      showlegend=False)
     fig.show()
     return None
 
