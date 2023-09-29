@@ -7,6 +7,7 @@ MODELS_DESCRIPTION_FILE_PATH = "./models_descriptions.txt"
 
 # SUFFIXES
 KERAS_SUFFIX = ".keras"
+NUMPY_SUFFIX = ".npy"
 
 # Verbosity constants
 ERROR = 1

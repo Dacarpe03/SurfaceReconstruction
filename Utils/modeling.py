@@ -4,19 +4,22 @@ import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
+
 from constants import MODELS_FOLDER_PATH, \
+											DATA_FOLDER_PATH, \
 											MODELS_DESCRIPTION_FILE_PATH, \
-											KERAS_SUFFIX
+											KERAS_SUFFIX, \
+											NUMPY_SUFFIX
 
 
 def read_data_for_training(
-	features_file_path,
-	labels_file_path,
+	features_filename,
+	labels_filename,
 	train_perc=0.8,
 	val_perc=0.1,
 	test_perc=0.1):
 	"""
-	Function to read and split our data
+	Function to read and split our data given a name (NO PATH NOR SUFFIX, JUST THE NAME)
 
 	Input:
 		features_file_path (string): The .npy file with the features dataset
@@ -33,6 +36,10 @@ def read_data_for_training(
 		test_features (np.array): An np.array containing np.array with the train features
 		test_labels (np.array): An np.array containing np.array with the train features
 	"""
+
+	# Create the path to the data files
+	features_file_path = f"{DATA_FOLDER_PATH}/{features_filename}{NUMPY_SUFFIX}"
+	labels_file_path = f"{DATA_FOLDER_PATH}/{labels_filename}{NUMPY_SUFFIX}"
 
 	# Read the files with the dataset
 	features = np.load(features_file_path, allow_pickle=True)
@@ -92,15 +99,21 @@ def create_linear_architecture(
 
 	# Create the hidden layers of the neural network
 	for neurons in hidden_layer_sizes:
+
+		# Define layer
 		model.add(keras.layers.Dense(neurons,
-			kernel_regularizer=regularizer,
-			kernel_initializer=keras.initializers.HeNormal(seed=None),
-			use_bias=False))
+							kernel_regularizer=regularizer,
+							kernel_initializer=keras.initializers.HeNormal(seed=None),
+							use_bias=False))
+
+		# Add normalization
 		if use_batch_normalization:
 			model.add(keras.layers.BatchNormalization())
 
+		# Define the activation function
 		model.add(keras.layers.Activation(hidden_activation))
 
+	# Add output layer
 	model.add(keras.layers.Dense(output_size,
 				activation=output_activation))
 
@@ -157,12 +170,12 @@ def train_linear_model(
 		history (): The training history of the model
 	"""
 	history = model.fit(train_features,
-		train_labels,
-		batch_size=batch_size,
-		epochs=epochs,
-		validation_data=(val_features, val_labels),
-		callbacks=callbacks,
-		verbose=1)
+											train_labels,
+											batch_size=batch_size,
+											epochs=epochs,
+											validation_data=(val_features, val_labels),
+											callbacks=callbacks,
+											verbose=1)
 
 	return history
 
@@ -203,13 +216,16 @@ def store_model(
 	Returns:
 		None
 	"""
+	# Create the model path
 	model_file_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
+	# Save the model
 	model.save(model_file_path)
 
+	# Save its description
 	with open(MODELS_DESCRIPTION_FILE_PATH, 'a') as f:
 		f.write(f"===={model_name}====\n")
 		f.write(description)
-		f.write("\n")
+		f.write("\n\n")
 
 	return None
 
@@ -227,3 +243,50 @@ def load_model(
 	"""
 	model_path = f"{MODELS_FOLDER_PATH}/{model_name}{KERAS_SUFFIX}"
 	model = keras.models.load_model(model_path)
+	return model
+
+
+def predict_zernike_coefficients(
+	model,
+	surface_points):
+	"""
+	Uses the model to get the coefficients of a surface given its samples
+
+	Input:
+		model (keras.models): The model that will make the prediction
+		surface_points (np.array): The array containing the z_values of the surface in the sampled points
+
+	Returns:
+		zernike_coefficients (np.array): The array containing the predicted zernike coefficients that describe the surface
+	"""
+
+	# Adjust the surface points to the neural network/model input 
+	input_surface = np.array([surface_points])
+
+	# Predict
+	output_coefficients = model.predict(input_surface)
+
+	# Get the coefficients compile_linear_model
+	zernike_coefficients = output_coefficients[0]
+
+	return zernike_coefficients
+
+
+def evaluate_model(
+	model,
+	features,
+	labels
+	):
+	"""
+	Evaluates a model and prints its mean squared error
+	
+	Input:
+		model (keras.models): The model to evaluate
+		features (np.array): The array with the features to predict
+		labels (np.array): The labels of the features to evaluate
+
+	Returns:
+		None
+	"""
+	results = model.evaluate(features, labels)
+	print("MSE:", results[1])

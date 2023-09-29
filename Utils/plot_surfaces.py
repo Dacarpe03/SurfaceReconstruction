@@ -1,5 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import pandas as pd
+
+
 
 from constants import *
 from surfaces import *
@@ -28,41 +33,12 @@ def plot_surface(
                                                                          n_angles=n_angles)
     # Create the mesh grid from the sampled data
     rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
-        
-    # Create a list with the zernike meshes
-    zernike_meshes = []
-    
-    # Calculate each the zernike mesh
-    for m_index, n_index, coefficient in zernike_polynomials:
-        success, z_mesh = compute_zernike_polynomial_for_meshgrid(m_index,
-                                                                  n_index,
-                                                                  rho_mesh,
-                                                                  varphi_mesh,
-                                                                  verbose=verbose)
 
-        if not success:
-            if verbose:
-                msg = "Unable to compute the surface"
-                print_verbose_msg(msg, 
-                                  ERROR)
-            return None
-
-        # Weight the zernike mesh with its coefficient
-        weighted_z_mesh = coefficient * z_mesh
-        
-        # Add the weighted zernike mesh to the meshes list
-        zernike_meshes.append(weighted_z_mesh)
-        
-    # Get the shape of the zernike matrix mesh
-    rows = rho_mesh.shape[0]
-    columns = rho_mesh.shape[1]
-        
-    # Create an empty surface mesh
-    surface_mesh = np.zeros((rows, columns))
-        
-    # Combine all the zernike meshes
-    for submesh in zernike_meshes:
-        surface_mesh += submesh
+    # Compute the surface mesh
+    surface_mesh = compute_surface_meshgrid(zernike_polynomials,
+                                            rho_mesh,
+                                            varphi_mesh,
+                                            verbose=verbose)
         
     # Converto to cartesian coordinates
     X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
@@ -76,8 +52,51 @@ def plot_surface(
     return None
 
 
+def plot_surface_enhanced(
+    zernike_polynomials,
+    n_radiuses=50,
+    n_angles=50,
+    verbose=False):
+    """
+    Plots a surface given the zernike polynomials and its coefficients using plotly
+    
+    Input:
+        zernike_polynomials (list): A list of tuples with polynomials info (m_index, n_index, coefficient)
+        n_radiuses (int): Optional. The number of radiuses to create the mesh
+        n_angles (int): Optional. The number of angles to create the mesh
+        
+    Returns:
+        None
+    """
+        
+    # Get the radius and angle samples
+    rho_samples, varphi_samples = polar_samples_unit_circle_for_plotting(n_radiuses=n_radiuses,
+                                                                         n_angles=n_angles)
+    # Create the mesh grid from the sampled data
+    rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
+
+    # Compute the surface mesh
+    surface_mesh = compute_surface_meshgrid(zernike_polynomials,
+                                            rho_mesh,
+                                            varphi_mesh,
+                                            verbose=verbose)
+    
+    # Convert to cartesian coordinates
+    X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
+
+    
+    # Create figure
+    fig = go.Figure(data=[go.Surface(z=surface_mesh, x=X, y=Y), go.Surface(z=surface_mesh, x=Y, y=X)])
+    fig.update_layout(title='Surface',
+                      autosize=True,
+                      margin=dict(l=65, r=50, b=65, t=90))
+    fig.show()
+    return None
+
+
 def plot_surface_from_zernike_coefficients(
     zernike_coefficients,
+    enhanced=True,
     verbose=False):
     
     """
@@ -93,10 +112,72 @@ def plot_surface_from_zernike_coefficients(
     # First create the zernike polynomial tuples
     zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(zernike_coefficients)
 
-    # Then plot the surface
-    plot_surface(zernike_polynomials, 
-                 verbose=verbose)
+    if enhanced:
+        plot_surface_enhanced(zernike_polynomials,
+                              verbose=verbose)
+    else:
+        # Then plot the surface
+        plot_surface(zernike_polynomials, 
+                     verbose=verbose)
 
+    return None
+
+
+def plot_original_vs_reconstructed(
+    original_zernike_coeffs,
+    predicted_zernike_coeffs,
+    n_radiuses=50,
+    n_angles=50,
+    verbose=False):
+    
+    # Build the zernike polynomials from the coefficients
+    original_zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(original_zernike_coeffs)
+    predicted_zernike_polynomials = generate_zernike_polynomial_tuples_from_coefficients(predicted_zernike_coeffs)
+
+    # Get the radius and angle samples
+    rho_samples, varphi_samples = polar_samples_unit_circle_for_plotting(n_radiuses=n_radiuses,
+                                                                         n_angles=n_angles)
+    # Create the mesh grid from the sampled data
+    rho_mesh, varphi_mesh = np.meshgrid(rho_samples, varphi_samples)
+
+    # Compute the original surface mesh
+    original_surface_mesh = compute_surface_meshgrid(original_zernike_polynomials,
+                                                     rho_mesh,
+                                                     varphi_mesh,
+                                                     verbose=verbose)
+
+    # Compute reconstructed surface_mesh
+    predict_surface_mesh = compute_surface_meshgrid(predicted_zernike_polynomials,
+                                                    rho_mesh,
+                                                    varphi_mesh,
+                                                    verbose=verbose)
+
+    # Convert to cartesian coordinates
+    X, Y = rho_mesh*np.cos(varphi_mesh), rho_mesh*np.sin(varphi_mesh)
+
+    
+    # Create Surfaces
+    og_surface = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2, colorbar=dict(len=0.5))
+    ai_surface = go.Surface(z=predict_surface_mesh, x=X, y=Y, colorbar=dict(len=0.5))
+
+    og_surface_vs = go.Surface(z=original_surface_mesh, x=X, y=Y, colorscale='viridis', colorbar_x=-0.2, colorbar=dict(len=0.5))
+    ai_surface_vs = go.Surface(z=predict_surface_mesh, x=X, y=Y, colorbar=dict(len=0.5))
+
+    fig = make_subplots(rows=2, cols=2,
+                        horizontal_spacing=0.05,
+                        vertical_spacing=0.05,
+                        specs=[[{'is_3d': True, 'type':'scene'}, {'is_3d': True, 'type':'scene'}],
+                               [{'is_3d': True, 'colspan': 2, 'type':'scene'}, None]],
+                        subplot_titles=['Original surface', 'AI surface', 'Original vs AI', None])
+
+    fig.add_trace(og_surface_vs, 2, 1)
+    fig.add_trace(ai_surface_vs, 2, 1)
+    fig.add_trace(og_surface, 1, 1)
+    fig.add_trace(ai_surface, 1 ,2)
+    fig.update_layout(title_text='Comparison',
+                      height=1000,
+                      showlegend=False)
+    fig.show()
     return None
 
 

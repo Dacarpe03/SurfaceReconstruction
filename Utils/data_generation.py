@@ -41,7 +41,6 @@ def polar_samples_unit_circle_for_data_generation(
     return rho_samples, varphi_samples
 
 
-
 def polar_samples_unit_circle_for_plotting(
     n_radiuses=50, 
     n_angles=50):
