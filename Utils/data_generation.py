@@ -77,8 +77,8 @@ def cartesian_samples_unit_square_for_data_generation(
         x_samples (np.array). The array containing the x coordinates of the points
         y_samples (np.array). The array containing the y coordinates of the points
     """
-    x_samples = np.linspace(0.05, 0.95, n_rows)
-    y_samples = np.linspace(0.05, 0.95, n_cols)
+    x_samples = np.linspace(-0.95, 0.95, n_rows)
+    y_samples = np.linspace(-0.95, 0.95, n_cols)
 
     return x_samples, y_samples
 
@@ -97,9 +97,11 @@ def from_cartesian_to_polar_coordinates(
         rho_coordinates (np.array): The list of rho (radius) coordinates of the points
         varphi_coordinates (np.array): The list of varphi (radians) coordinates of the points
     """
+    np_x_coords = np.array(x_coordinates)
+    np_y_coords = np.array(y_coordinates)
 
-    rho_coordinates = np.sqrt(x_coordinates**2 + y_coordinates**2)
-    varphi_coordinates = np.arctan2(y_coordinates, x_coordinates)
+    rho_coordinates = np.sqrt(np_x_coords**2 + np_y_coords**2)
+    varphi_coordinates = np.arctan2(np_y_coords, np_x_coords)
     
     return rho_coordinates, varphi_coordinates
     

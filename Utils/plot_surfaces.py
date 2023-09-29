@@ -148,17 +148,20 @@ def plot_2d_cartesian_points(
             x_coordinates.append(x)
             y_coordinates.append(y)
 
-            
 
-    #fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
-    fig, ax = plt.subplots()
+    rho_coordinates, varphi_coordinates = from_cartesian_to_polar_coordinates(x_coordinates,
+                                                                              y_coordinates)
+    fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
     
     # Remove radius ticks
-    #ax.set_rticks([])
+    # ax.set_rticks([])
     
-    #angles = [0, 45, 90, 135, 180, 225, 270, 315]
-    #labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
-    #ax.set_thetagrids(angles, labels=labels)
+    angles = [0, 45, 90, 135, 180, 225, 270, 315]
+    labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
+    ax.set_thetagrids(angles, labels=labels)
 
     # Plot the points
-    ax.plot(x_coordinates, y_coordinates, 'k.')
+    ax.plot(rho_coordinates, varphi_coordinates, 'k.')
+
+    fig2, ax2 = plt.subplots()
+    ax2.plot(x_coordinates, y_coordinates, 'k.')
