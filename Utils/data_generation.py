@@ -84,10 +84,24 @@ def cartesian_samples_unit_square_for_data_generation(
 
 
 def from_cartesian_to_polar_coordinates(
-    x_samples,
-    y_samples):
+    x_coordinates,
+    y_coordinates):
+    """
+    Transform the cartesian coordinates of points to polar coordinates. The function does not make all possible coordinates combinations
 
-    return None
+    Input:
+        x_coordinates (list): The list of cartesian coordinates in the x axes
+        y_coordinates (list): The list of cartesin coordinates in the y axes
+
+    Returns:
+        rho_coordinates (np.array): The list of rho (radius) coordinates of the points
+        varphi_coordinates (np.array): The list of varphi (radians) coordinates of the points
+    """
+
+    rho_coordinates = np.sqrt(x_coordinates**2 + y_coordinates**2)
+    varphi_coordinates = np.arctan2(y_coordinates, x_coordinates)
+    
+    return rho_coordinates, varphi_coordinates
     
 
 def get_random_zernike_coefficients():
