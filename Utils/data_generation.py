@@ -63,6 +63,15 @@ def polar_samples_unit_circle_for_plotting(
     return rho_samples, varphi_samples
 
 
+def cartesian_samples_unit_square(
+    nrows=20,
+    ncols=20):
+    """
+    Samples points from the unit square
+    
+    """
+    
+
 def get_random_zernike_coefficients():
     """
     Describes a random surface based on the zernike polynomials returning their indexes and coefficients to plot them
