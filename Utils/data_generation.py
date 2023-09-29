@@ -64,12 +64,23 @@ def polar_samples_unit_circle_for_plotting(
 
 
 def cartesian_samples_unit_square(
-    nrows=20,
-    ncols=20):
+    n_rows=10,
+    n_cols=10):
     """
     Samples points from the unit square
-    
+
+    Input:
+        n_rows (int): Optional. The number of samples in the x axis (rows)
+        n_cols (int): Optional. The number of samples in the y axis (columns)
+
+    Returns:
+        x_samples (np.array). The array containing the x coordinates of the points
+        y_samples (np.array). The array containing the y coordinates of the points
     """
+    x_samples = np.linspace(0.05, 0.95, n_rows)
+    y_samples = np.linspace(0.05, 0.95, n_cols)
+
+    return x_samples, y_samples
     
 
 def get_random_zernike_coefficients():
