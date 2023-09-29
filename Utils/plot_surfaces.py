@@ -132,7 +132,14 @@ def plot_2d_cartesian_points(
     x_samples,
     y_samples):
     """
-    
+    Plots points given its unique x and y coordinates, (the funciton makes a cartesian product to get all the possible combinations)
+
+    Input:
+        x_samples (np.array). The array containing the x coordinates of the points
+        y_samples (np.array). The array containing the y coordinates of the points
+
+    Returns:
+        None
     """
     x_coordinates = []
     y_coordinates = []
@@ -141,6 +148,7 @@ def plot_2d_cartesian_points(
             x_coordinates.append(x)
             y_coordinates.append(y)
 
+            
 
     #fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
     fig, ax = plt.subplots()
