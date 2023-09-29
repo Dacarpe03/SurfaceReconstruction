@@ -126,3 +126,31 @@ def plot_2d_polar_points(
 
     # Plot the points
     ax.plot(varphi_samples, rho_samples, 'k.')
+
+
+def plot_2d_cartesian_points(
+    x_samples,
+    y_samples):
+    """
+    
+    """
+    x_coordinates = []
+    y_coordinates = p[]
+    for x in x_samples:
+        for y in y_samples:
+            x_coordinates.append(x)
+            y_coordinates.append(y)
+
+
+    fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
+    fig, ax = plt.subplots()
+    
+    # Remove radius ticks
+    #ax.set_rticks([])
+    
+    #angles = [0, 45, 90, 135, 180, 225, 270, 315]
+    #labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
+    #ax.set_thetagrids(angles, labels=labels)
+
+    # Plot the points
+    ax.plot(x_coordinates, y_coordinates, 'k.')

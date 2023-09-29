@@ -63,7 +63,7 @@ def polar_samples_unit_circle_for_plotting(
     return rho_samples, varphi_samples
 
 
-def cartesian_samples_unit_square(
+def cartesian_samples_unit_square_for_data_generation(
     n_rows=10,
     n_cols=10):
     """
