@@ -185,6 +185,11 @@ def compute_surface_value_at_point(
         
     # Initialize the z value of the point
     z_value = 0
+
+
+    # For points outside of the unit disk we return the value 0 (this is necessary for creating the convolution data)
+    if rho < 0 or rho > 1:
+        return True, z_value
         
     # For loop to compute the point value on each zernike polynomials and add them all with a weighted sum
     for m_index, n_index, coefficient in zernike_polynomials:
@@ -377,7 +382,7 @@ def convert_point_from_cartesian_to_polar_coordinates(
     y_coordinate):
     """
     Convert the point from cartesian 
-    
+
     Input:
         x_coordinate (float): The x coordinate of the point to transfrom
         y_coordinate (float): The y coordinate of the point to transform
@@ -391,4 +396,4 @@ def convert_point_from_cartesian_to_polar_coordinates(
     rho = math.sqrt(x_coordinate**2 + y_coordinate**2)
     varphi = math.atan2(y_coordinate, x_coordinate)
 
-    return
+    return rho, varphi
