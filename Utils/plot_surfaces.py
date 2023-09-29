@@ -5,10 +5,11 @@ from plotly.subplots import make_subplots
 import pandas as pd
 
 
+from surfaces import compute_surface_meshgrid, \
+                     convert_list_from_cartesian_to_polar_coordinates
 
-from constants import *
-from surfaces import *
-from data_generation import *
+from data_generation import polar_samples_unit_circle_for_plotting, \
+                            generate_zernike_polynomial_tuples_from_coefficients
 
 
 def plot_surface(

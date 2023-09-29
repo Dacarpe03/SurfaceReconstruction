@@ -2,8 +2,9 @@ import numpy as np
 import random
 
 from constants import *
-from surfaces import evaluate_zs_from_surface
-
+from surfaces import evaluate_zs_from_surface, \
+                     convert_point_from_cartesian_to_polar_coordinates, \
+                     convert_list_from_cartesian_to_polar_coordinates
 
 def polar_samples_unit_circle_for_data_generation(
     n_circles=5, 
@@ -80,29 +81,6 @@ def cartesian_samples_unit_square_for_data_generation(
     y_samples = np.linspace(-0.95, 0.95, n_cols)
 
     return x_samples, y_samples
-
-
-def from_cartesian_to_polar_coordinates(
-    x_coordinates,
-    y_coordinates):
-    """
-    Transform the cartesian coordinates of points to polar coordinates. The function does not make all possible coordinates combinations
-
-    Input:
-        x_coordinates (list): The list of cartesian coordinates in the x axes
-        y_coordinates (list): The list of cartesin coordinates in the y axes
-
-    Returns:
-        rho_coordinates (np.array): The list of rho (radius) coordinates of the points
-        varphi_coordinates (np.array): The list of varphi (radians) coordinates of the points
-    """
-    np_x_coords = np.array(x_coordinates)
-    np_y_coords = np.array(y_coordinates)
-
-    rho_coordinates = np.sqrt(np_x_coords**2 + np_y_coords**2)
-    varphi_coordinates = np.arctan2(np_y_coords, np_x_coords)
-    
-    return rho_coordinates, varphi_coordinates
     
 
 def get_random_zernike_coefficients():
@@ -210,7 +188,10 @@ def generate_data_for_linear_training(
     # Create the dataframe and add the data
     np.save(features_file_path, surface_list)
     np.save(labels_fiWele_path, coefficient_list)
-    return Nonedef generate_data_for_linear_training(
+    return None
+
+
+def generate_data_for_linear_training(
     n_data,
     features_file_path,
     labels_file_path,
@@ -292,7 +273,23 @@ def generate_data_for_convolutional_training(
         
         # Get the points polar coordinates to sample from the surface created by the zernike polynomials
         x_coordinates, y_coordinates = cartesian_samples_unit_square_for_data_generation()
-            
+
+        # Get the number of rows and columns
+        n_rows = x_coordinates.shape[0]
+        n_cols = y_coordinates.shape[0]
+
+        surface = np.zeros((n_rows, n_cols))
+
+        for r in range(0, n_rows):
+            x_coord = x_coordinates[r]
+            for c in range(0, n_cols):
+                y_coord = y_coordinates[c]
+                surface[r][c] = compute_surface_value_at_point(rho,
+                                                               varphi,
+                                                               zernike_polynomials,
+                                                               verbose=verbose)
+
+
         # Compute the values of the surface at the points
         success, surface_values = evaluate_zs_from_surface(rho_coordinates,
                                                            varphi_coordinates,

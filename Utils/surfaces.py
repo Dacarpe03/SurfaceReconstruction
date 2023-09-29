@@ -375,6 +375,18 @@ def convert_list_from_cartesian_to_polar_coordinates(
 def convert_point_from_cartesian_to_polar_coordinates(
     x_coordinate,
     y_coordinate):
+    """
+    Convert the point from cartesian 
+    
+    Input:
+        x_coordinate (float): The x coordinate of the point to transfrom
+        y_coordinate (float): The y coordinate of the point to transform
+
+
+    Returns:
+        rho (float): The rho coordinate of the point transformed to polar
+        varphi (float): The varphi coordinate of the point transformed to polar
+    """
     
     rho = math.sqrt(x_coordinate**2 + y_coordinate**2)
     varphi = math.atan2(y_coordinate, x_coordinate)
