@@ -135,14 +135,14 @@ def plot_2d_cartesian_points(
     
     """
     x_coordinates = []
-    y_coordinates = p[]
+    y_coordinates = []
     for x in x_samples:
         for y in y_samples:
             x_coordinates.append(x)
             y_coordinates.append(y)
 
 
-    fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
+    #fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
     fig, ax = plt.subplots()
     
     # Remove radius ticks
