@@ -230,8 +230,8 @@ def plot_2d_cartesian_points(
             y_coordinates.append(y)
 
 
-    rho_coordinates, varphi_coordinates = from_cartesian_to_polar_coordinates(x_coordinates,
-                                                                              y_coordinates)
+    rho_coordinates, varphi_coordinates = convert_list_from_cartesian_to_polar_coordinates(x_coordinates,
+                                                                                           y_coordinates)
     fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
     
     # Remove radius ticks and set the radius to 1

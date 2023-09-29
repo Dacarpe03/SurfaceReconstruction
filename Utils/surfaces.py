@@ -347,3 +347,36 @@ def compute_surface_meshgrid(
         surface_mesh += submesh
 
     return surface_mesh
+
+
+def convert_list_from_cartesian_to_polar_coordinates(
+    x_coordinates,
+    y_coordinates):
+    """
+    Transform the cartesian coordinates of points to polar coordinates. The function does not make all possible coordinates combinations
+
+    Input:
+        x_coordinates (list): The list of cartesian coordinates in the x axes
+        y_coordinates (list): The list of cartesin coordinates in the y axes
+
+    Returns:
+        rho_coordinates (np.array): The list of rho (radius) coordinates of the points
+        varphi_coordinates (np.array): The list of varphi (radians) coordinates of the points
+    """
+    np_x_coords = np.array(x_coordinates)
+    np_y_coords = np.array(y_coordinates)
+
+    rho_coordinates = np.sqrt(np_x_coords**2 + np_y_coords**2)
+    varphi_coordinates = np.arctan2(np_y_coords, np_x_coords)
+    
+    return rho_coordinates, varphi_coordinates
+
+
+def convert_point_from_cartesian_to_polar_coordinates(
+    x_coordinate,
+    y_coordinate):
+    
+    rho = math.sqrt(x_coordinate**2 + y_coordinate**2)
+    varphi = math.atan2(y_coordinate, x_coordinate)
+
+    return

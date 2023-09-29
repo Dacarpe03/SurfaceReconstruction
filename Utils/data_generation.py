@@ -158,7 +158,7 @@ def generate_zernike_polynomial_tuples_from_coefficients(
     return zernike_polynomials
 
 
-def generate_data_for_training(
+def generate_data_for_linear_training(
     n_data,
     features_file_path,
     labels_file_path,
@@ -209,5 +209,112 @@ def generate_data_for_training(
     
     # Create the dataframe and add the data
     np.save(features_file_path, surface_list)
-    np.save(labels_file_path, coefficient_list)
+    np.save(labels_fiWele_path, coefficient_list)
+    return Nonedef generate_data_for_linear_training(
+    n_data,
+    features_file_path,
+    labels_file_path,
+    verbose=False):
+    """
+    Generates a dataframe with data for training
+    
+    Input:
+        n_data (int): Number of data points to train (A data point consisting on a surface and its zernike coefficients)
+        features_file_path (string): The path where the numpy array with the surface z values will be stored
+        labels_file_path (string): The path where the numpy array with the coefficients of the surface will be stored
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        None
+    """
+    
+    surface_list = []
+    coefficient_list = []
+    
+    for i in range(0, n_data):
+        # Get the zernike polynomials with their coefficients
+        zernike_polynomials = get_random_zernike_coefficients()
+        
+        # Get the points polar coordinates to sample from the surface created by the zernike polynomials
+        rho_coordinates, varphi_coordinates = polar_samples_unit_circle_for_data_generation()
+            
+        # Compute the values of the surface at the points
+        success, surface_values = evaluate_zs_from_surface(rho_coordinates,
+                                                           varphi_coordinates,
+                                                           zernike_polynomials,
+                                                           verbose=verbose)
+        
+        if not success:
+            return False, None
+
+        # Append the surface values to the surface list
+        surface_list.append(surface_values)
+        
+        # Get last element (zernike coefficient) of the zernike polynomials tuples to store them in the dataframe
+        coefficients = list(map(lambda x: x[-1], zernike_polynomials))
+        
+        # Convert the list to a numpy array
+        np_coefficients = np.array(coefficients)
+        
+        # Append the surface zernike coefficients to the list of coefficients
+        coefficient_list.append(np_coefficients)
+    
+    # Create the dataframe and add the data
+    np.save(features_file_path, surface_list)
+    np.save(labels_fiWele_path, coefficient_list)
+    return None
+
+
+def generate_data_for_convolutional_training(
+    n_data,
+    features_file_path,
+    labels_file_path,
+    verbose=False):
+    """
+    Generates a dataframe with data for training
+    
+    Input:
+        n_data (int): Number of data points to train (A data point consisting on a surface and its zernike coefficients)
+        features_file_path (string): The path where the numpy array with the surface z values will be stored
+        labels_file_path (string): The path where the numpy array with the coefficients of the surface will be stored
+        verbose (bool): Optional. True if more verbosity for errors
+        
+    Returns:
+        None
+    """
+    
+    surface_list = []
+    coefficient_list = []
+    
+    for i in range(0, n_data):
+        # Get the zernike polynomials with their coefficients
+        zernike_polynomials = get_random_zernike_coefficients()
+        
+        # Get the points polar coordinates to sample from the surface created by the zernike polynomials
+        x_coordinates, y_coordinates = cartesian_samples_unit_square_for_data_generation()
+            
+        # Compute the values of the surface at the points
+        success, surface_values = evaluate_zs_from_surface(rho_coordinates,
+                                                           varphi_coordinates,
+                                                           zernike_polynomials,
+                                                           verbose=verbose)
+        
+        if not success:
+            return False, None
+
+        # Append the surface values to the surface list
+        surface_list.append(surface_values)
+        
+        # Get last element (zernike coefficient) of the zernike polynomials tuples to store them in the dataframe
+        coefficients = list(map(lambda x: x[-1], zernike_polynomials))
+        
+        # Convert the list to a numpy array
+        np_coefficients = np.array(coefficients)
+        
+        # Append the surface zernike coefficients to the list of coefficients
+        coefficient_list.append(np_coefficients)
+    
+    # Create the dataframe and add the data
+    np.save(features_file_path, surface_list)
+    np.save(labels_fiWele_path, coefficient_list)
     return None
