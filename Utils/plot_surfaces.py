@@ -127,6 +127,7 @@ def plot_surface_from_zernike_coefficients(
 def plot_original_vs_reconstructed(
     original_zernike_coeffs,
     predicted_zernike_coeffs,
+    name,
     n_radiuses=50,
     n_angles=50,
     verbose=False):
@@ -175,7 +176,7 @@ def plot_original_vs_reconstructed(
     fig.add_trace(ai_surface_vs, 2, 1)
     fig.add_trace(og_surface, 1, 1)
     fig.add_trace(ai_surface, 1 ,2)
-    fig.update_layout(title_text='Comparison',
+    fig.update_layout(title_text=f"Reconstruction with {name}",
                       height=1000,
                       showlegend=False)
     fig.show()

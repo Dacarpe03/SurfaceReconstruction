@@ -42,10 +42,7 @@ def create_conv_model(input_shape,
 
 	# Adding the output layer with 10 units (for example, for 10 classes) and 'softmax' activation function
 	model.add(Dense(output_size, activation='linear'))
-
-	# Compiling the model with 'adam' optimizer, 'categorical_crossentropy' loss, and accuracy metric
-	model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
+	
 	# Printing the summary of the model architecture
 	model.summary()
 	return model
