@@ -8,7 +8,7 @@ conda env create -f environment.yml
 
 Now let Python to use the Utils scripts with the following command:
 ```
-export PYTHONPATH="${PYTHONPATH}:/home/daniel/DaniProjects/SurfaceReconstruction/Utils/"
+export PYTHONPATH="${PYTHONPATH}:./SurfaceReconstruction/Utils/"
 ```
 
 ## Step by step
