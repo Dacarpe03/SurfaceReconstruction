@@ -185,6 +185,11 @@ def compute_surface_value_at_point(
         
     # Initialize the z value of the point
     z_value = 0
+
+
+    # For points outside of the unit disk we return the value 0 (this is necessary for creating the convolution data)
+    if rho < 0 or rho > 1:
+        return True, z_value
         
     # For loop to compute the point value on each zernike polynomials and add them all with a weighted sum
     for m_index, n_index, coefficient in zernike_polynomials:
@@ -347,3 +352,48 @@ def compute_surface_meshgrid(
         surface_mesh += submesh
 
     return surface_mesh
+
+
+def convert_list_from_cartesian_to_polar_coordinates(
+    x_coordinates,
+    y_coordinates):
+    """
+    Transform the cartesian coordinates of points to polar coordinates. The function does not make all possible coordinates combinations
+
+    Input:
+        x_coordinates (list): The list of cartesian coordinates in the x axes
+        y_coordinates (list): The list of cartesin coordinates in the y axes
+
+    Returns:
+        rho_coordinates (np.array): The list of rho (radius) coordinates of the points
+        varphi_coordinates (np.array): The list of varphi (radians) coordinates of the points
+    """
+    np_x_coords = np.array(x_coordinates)
+    np_y_coords = np.array(y_coordinates)
+
+    rho_coordinates = np.sqrt(np_x_coords**2 + np_y_coords**2)
+    varphi_coordinates = np.arctan2(np_y_coords, np_x_coords)
+    
+    return rho_coordinates, varphi_coordinates
+
+
+def convert_point_from_cartesian_to_polar_coordinates(
+    x_coordinate,
+    y_coordinate):
+    """
+    Convert the point from cartesian 
+
+    Input:
+        x_coordinate (float): The x coordinate of the point to transfrom
+        y_coordinate (float): The y coordinate of the point to transform
+
+
+    Returns:
+        rho (float): The rho coordinate of the point transformed to polar
+        varphi (float): The varphi coordinate of the point transformed to polar
+    """
+    
+    rho = math.sqrt(x_coordinate**2 + y_coordinate**2)
+    varphi = math.atan2(y_coordinate, x_coordinate)
+
+    return rho, varphi

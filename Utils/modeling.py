@@ -3,13 +3,49 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
-
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
 from constants import MODELS_FOLDER_PATH, \
 											DATA_FOLDER_PATH, \
 											MODELS_DESCRIPTION_FILE_PATH, \
 											KERAS_SUFFIX, \
 											NUMPY_SUFFIX
+
+
+# Importing required libraries
+from keras.models import Sequential
+
+
+def create_conv_model(input_shape,
+											output_size):
+
+	# Creating a Sequential model
+	model = Sequential()
+	input_shape = input_shape + (1, )
+	# Adding a convolutional layer with 32 filters, a 3x3 kernel, and 'relu' activation function
+	model.add(Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
+
+	# Adding a max-pooling layer with a 2x2 pool size
+	model.add(MaxPooling2D(pool_size=(2, 2)))
+
+	# Adding another convolutional layer with 64 filters, a 3x3 kernel, and 'relu' activation function
+	model.add(Conv2D(64, (3, 3), activation='relu'))
+
+	# Adding another max-pooling layer with a 2x2 pool size
+	model.add(MaxPooling2D(pool_size=(2, 2)))
+
+	# Flattening the 3D output to 1D tensor for a fully connected layer
+	model.add(Flatten())
+
+	# Adding a fully connected layer with 128 units and 'relu' activation function
+	model.add(Dense(128, activation='relu'))
+
+	# Adding the output layer with 10 units (for example, for 10 classes) and 'softmax' activation function
+	model.add(Dense(output_size, activation='linear'))
+	
+	# Printing the summary of the model architecture
+	model.summary()
+	return model
 
 
 def read_data_for_training(

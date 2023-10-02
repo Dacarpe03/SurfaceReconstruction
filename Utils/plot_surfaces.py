@@ -5,10 +5,11 @@ from plotly.subplots import make_subplots
 import pandas as pd
 
 
+from surfaces import compute_surface_meshgrid, \
+                     convert_list_from_cartesian_to_polar_coordinates
 
-from constants import *
-from surfaces import *
-from data_generation import *
+from data_generation import polar_samples_unit_circle_for_plotting, \
+                            generate_zernike_polynomial_tuples_from_coefficients
 
 
 def plot_surface(
@@ -126,6 +127,7 @@ def plot_surface_from_zernike_coefficients(
 def plot_original_vs_reconstructed(
     original_zernike_coeffs,
     predicted_zernike_coeffs,
+    name,
     n_radiuses=50,
     n_angles=50,
     verbose=False):
@@ -174,7 +176,7 @@ def plot_original_vs_reconstructed(
     fig.add_trace(ai_surface_vs, 2, 1)
     fig.add_trace(og_surface, 1, 1)
     fig.add_trace(ai_surface, 1 ,2)
-    fig.update_layout(title_text='Comparison',
+    fig.update_layout(title_text=f"Reconstruction with {name}",
                       height=1000,
                       showlegend=False)
     fig.show()
@@ -207,3 +209,40 @@ def plot_2d_polar_points(
 
     # Plot the points
     ax.plot(varphi_samples, rho_samples, 'k.')
+
+
+def plot_2d_cartesian_points(
+    x_samples,
+    y_samples):
+    """
+    Plots points given its unique x and y coordinates, (the funciton makes a cartesian product to get all the possible combinations)
+
+    Input:
+        x_samples (np.array). The array containing the x coordinates of the points
+        y_samples (np.array). The array containing the y coordinates of the points
+
+    Returns:
+        None
+    """
+    x_coordinates = []
+    y_coordinates = []
+    for x in x_samples:
+        for y in y_samples:
+            x_coordinates.append(x)
+            y_coordinates.append(y)
+
+
+    rho_coordinates, varphi_coordinates = convert_list_from_cartesian_to_polar_coordinates(x_coordinates,
+                                                                                           y_coordinates)
+    fig, ax = plt.subplots(subplot_kw={'projection':'polar'})
+    
+    # Remove radius ticks and set the radius to 1
+    ax.set_rticks([])
+    ax.set_rlim(0, 1)
+    
+    angles = [0, 45, 90, 135, 180, 225, 270, 315]
+    labels = ['0', r'$\frac{\pi}{4}$', r'$\frac{\pi}{2}$', r'$\frac{3\pi}{4}$', r'$\pi$', r'$\frac{5\pi}{4}$', r'$\frac{3\pi}{2}$', r'$\frac{7\pi}{4}$']
+    ax.set_thetagrids(angles, labels=labels)
+
+    # Plot the points
+    ax.plot(varphi_coordinates, rho_coordinates, 'k.')
