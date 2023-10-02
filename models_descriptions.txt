@@ -61,30 +61,6 @@ batch_size = 64
 reduce_lr = ReduceLROnPlateau('mean_squared_error', factor=0.1, patience=150, verbose=1) 
 early_stop = EarlyStopping('mean_squared_error', patience=500, verbose=1) 
 callbacks = [reduce_lr, early_stop]
-====ConvolutionalModel====
-# Neural network architecture hyperparameters 
-# Creating a Sequential model 
-model = Sequential() 
-input_shape = input_shape + (1, ) 
-# Adding a convolutional layer with 32 filters, a 3x3 kernel, and 'relu' activation function 
-model.add(Conv2D(32, (3, 3), activation='relu', input_shape=input_shape)) 
-# Adding a max-pooling layer with a 2x2 pool size 
-model.add(MaxPooling2D(pool_size=(2, 2)))
-# Adding another convolutional layer with 64 filters, a 3x3 kernel, and 'relu' activation function 
-model.add(Conv2D(64, (3, 3), activation='relu')) 
-# Adding another max-pooling layer with a 2x2 pool size 
-model.add(MaxPooling2D(pool_size=(2, 2))) 
-# Flattening the 3D output to 1D tensor for a fully connected layer 
-model.add(Flatten()) 
-# Adding a fully connected layer with 128 units and 'relu' activation function 
-model.add(Dense(128, activation='relu')) 
-# Adding the output layer with 10 units (for example, for 10 classes) and 'softmax' activation function 
-model.add(Dense(output_size, activation='linear')) 
-# Compiling the model with 'adam' optimizer, 'categorical_crossentropy' loss, and accuracy metric 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy']) 
-# Printing the summary of the model architecture 
-model.summary() 
-return model
 
 ====ConvolutionalModel====
 # Neural network architecture hyperparameters 
@@ -104,10 +80,17 @@ model.add(Flatten())
 # Adding a fully connected layer with 128 units and 'relu' activation function 
 model.add(Dense(128, activation='relu')) 
 # Adding the output layer with 10 units (for example, for 10 classes) and 'softmax' activation function 
-model.add(Dense(output_size, activation='linear')) 
-# Compiling the model with 'adam' optimizer, 'categorical_crossentropy' loss, and accuracy metric 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy']) 
-# Printing the summary of the model architecture 
-model.summary() 
-return model
+model.add(Dense(output_size, activation='linear'))
+# Compilation hyperparameters 
+loss_function = tf.keras.losses.MeanSquaredError() 
+learning_rate = 0.01 
+optimizer = Adam(learning_rate=learning_rate, beta_1=0.9, beta_2=0.999) 
+metric = tf.keras.metrics.MeanSquaredError() 
+# Training hyperparameters 
+epochs = 2000 
+batch_size = 64 
+reduce_lr = ReduceLROnPlateau('mean_squared_error', factor=0.1, patience=150, verbose=1) 
+early_stop = EarlyStopping('mean_squared_error', patience=500, verbose=1) 
+callbacks = [reduce_lr, early_stop]
+
 
