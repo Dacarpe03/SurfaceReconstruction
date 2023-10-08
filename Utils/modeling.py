@@ -326,3 +326,30 @@ def evaluate_model(
 	"""
 	results = model.evaluate(features, labels)
 	print("MSE:", results[1])
+
+
+def custom_evaluation(
+	true_labels,
+	pred_labels):
+	"""
+	Computes the root mean squared error
+
+	Input:
+		true_labels (np.array): The array with the true labels
+		pred_labels (np.array): The array with the predicted labels
+
+	Returns:
+		None
+	"""
+
+	n_labels = len(pred_labels)
+	n_coeffs = len(pred_labels[0])
+	print(n_labels)
+	squared_differences = np.zeros((n_coeffs))
+	for i in range(n_labels):
+		squared_differences += np.square(np.subtract( linear_val_labels[i], pred_labels[i]))
+	
+	squared_differences /= n_labels
+	rmse = np.sqrt(squared_differences)
+	print(rmse)
+	return None
