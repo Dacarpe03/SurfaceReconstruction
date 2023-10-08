@@ -329,25 +329,28 @@ def evaluate_model(
 
 
 def custom_evaluation(
-	true_labels,
-	pred_labels):
+	model,
+	features,
+	true_labels):
 	"""
 	Computes the root mean squared error
 
 	Input:
-		true_labels (np.array): The array with the true labels
+		model (keras.models): The model to evaluate
+		features (np.array): The array with the features to predict
 		pred_labels (np.array): The array with the predicted labels
 
 	Returns:
 		None
 	"""
 
+	pred_labels = model.predict(features)
 	n_labels = len(pred_labels)
 	n_coeffs = len(pred_labels[0])
 	print(n_labels)
 	squared_differences = np.zeros((n_coeffs))
 	for i in range(n_labels):
-		squared_differences += np.square(np.subtract( linear_val_labels[i], pred_labels[i]))
+		squared_differences += np.square(np.subtract(true_labels[i], pred_labels[i]))
 	
 	squared_differences /= n_labels
 	rmse = np.sqrt(squared_differences)
